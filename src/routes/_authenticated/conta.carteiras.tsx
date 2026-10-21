@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/conta/carteiras')({
+export const Route = createFileRoute('/_authenticated/conta/carteiras')({
   head: () => ({ meta: [{ title: 'Carteiras | Kurio' }] }),
   component: WalletsRoutePage,
 })
