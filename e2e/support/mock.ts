@@ -72,11 +72,13 @@ export async function call<T = unknown>(
   path: string,
   options: CallOptions = {},
 ): Promise<ApiResult<T>> {
-  try {
-    return await callOnce<T>(page, path, options)
-  } catch (error) {
-    if (!(error instanceof Error) || !error.message.includes('Failed to fetch')) throw error
-    await waitForMocks(page)
-    return callOnce<T>(page, path, options)
+  for (let attempt = 1; ; attempt += 1) {
+    try {
+      return await callOnce<T>(page, path, options)
+    } catch (error) {
+      const transient = error instanceof Error && error.message.includes('Failed to fetch')
+      if (!transient || attempt >= 3) throw error
+      await waitForMocks(page)
+    }
   }
 }
