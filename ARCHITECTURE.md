@@ -87,6 +87,13 @@ Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18
 - Logout e troca de usuário cancelam e removem as consultas `['user', anterior]` e apagam os rascunhos de checkout do usuário anterior. O socket reconecta com o token novo.
 - Ao entrar, o carrinho de visitante é juntado ao do usuário (`POST /cart/merge`). Item que não coube vira aviso, com o motivo.
 
+## Carrinho
+
+- O visitante tem um carrinho na API, identificado por um UUID em `kurio:cart-id`, então ele sobrevive ao refresh. Ao entrar, os itens vão para o carrinho do usuário e o id de visitante é trocado por um novo.
+- Alterar quantidade e remover item são otimistas: a linha muda na hora e volta ao valor anterior se a API recusar. O limite da quantidade vem da edição.
+- Subtotal, desconto, taxa de rede e total vêm da cotação da API (`POST /quotes`), chaveada pela versão do carrinho. A tela não soma preços por conta própria.
+- Cupom inválido ou expirado mostra o erro da API no campo; o válido aparece no resumo e pode ser removido.
+
 ## Mocks e tempo real
 
 O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`shared/infrastructure/networkReady.ts`).
@@ -156,3 +163,9 @@ Ações fora do escopo do desafio nunca aparentam sucesso. Elas abrem o aviso "I
 | L3          | Cadastro mobile  | placeholder do usuário centralizado e os outros à esquerda; "Criar perfil" no mobile e "Criar conta" no desktop | campos alinhados à esquerda; "Criar conta" nos dois                                                        | consistência                                                         |
 | L4          | Login mobile     | logo, título, botão e link com centros diferentes                                                               | coluna única centralizada                                                                                  | alinhamento                                                          |
 | L5          | Login e cadastro | botões sociais com conteúdo descentralizado; Google, Facebook e "Esqueceu a senha?" sem função                  | conteúdo centralizado; os três abrem o aviso de indisponível                                               | fora do escopo, sem aparentar sucesso                                |
+| C1          | Carrinho         | imagem da linha encostada na borda esquerda e 24 px à direita                                                   | padding igual dos dois lados                                                                               | alinhamento                                                          |
+| C2          | Carrinho         | coluna "Edições" mostrando a quantidade; edição do item só no mobile                                            | coluna "Quantidade"; edição e ID do token nos dois tamanhos                                                | rótulo certo e mesma informação                                      |
+| C3, G8      | Carrinho         | painel "Resumo da carteira" com "(-) 00.00" sem unidade; subtotal com 2 casas e total com 3                     | "Resumo do pedido"; valores pelo formatador único de ETH, desconto com sinal e unidade                     | rótulo certo e números consistentes                                  |
+| C4          | Carrinho         | placeholder do cupom em 12 px e o resto em 15 px                                                                | escala tipográfica do projeto                                                                              | consistência                                                         |
+| U10         | Carrinho mobile  | lixeira sobreposta ao "+" na terceira linha e ausente nas outras                                                | botão de remover próprio em todas as linhas                                                                | toque sem erro                                                       |
+| U11, G11    | Carrinho         | três seletores de quantidade diferentes (detalhe, carrinho desktop e mobile)                                    | um QuantityStepper para todas as telas                                                                     | consistência                                                         |
