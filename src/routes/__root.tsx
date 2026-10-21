@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { RealtimeConnection } from '@/app/RealtimeConnection'
+import { CatalogSearchForm } from '@/modules/catalog'
 import { NftUpdateAnnouncer } from '@/modules/nft'
 import { createRootRouteWithContext, HeadContent, Outlet } from '@tanstack/react-router'
 import { NotFoundPage } from '@/shared/ui/feedback/NotFoundPage'
@@ -50,11 +51,15 @@ function RootLayout() {
         <TooltipProvider>
           <div className="flex min-h-dvh flex-col pb-24 md:pb-0">
             <Header
-              searchSlot={<HeaderSearchButton />}
+              searchSlot={
+                <HeaderSearchButton
+                  form={(close) => <CatalogSearchForm variant="header" onSubmitted={close} />}
+                />
+              }
               cartSlot={<HeaderCartLink />}
               accountSlot={<HeaderLoginLink />}
             />
-            <main id="conteudo" tabIndex={-1} className="flex-1 outline-none">
+            <main id="conteudo" tabIndex={-1} className="min-h-dvh flex-1 outline-none">
               <Outlet />
             </main>
             <div className="mt-16">
@@ -62,7 +67,7 @@ function RootLayout() {
             </div>
           </div>
           <MobileNav />
-          <Toaster position="bottom-right" />
+          <Toaster position="bottom-center" />
           <RealtimeConnection />
           <NftUpdateAnnouncer />
         </TooltipProvider>

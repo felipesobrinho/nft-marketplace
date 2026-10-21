@@ -1,9 +1,7 @@
-import { useState, type FormEvent, type ReactNode } from 'react'
-import { Link, useNavigate, useRouterState } from '@tanstack/react-router'
+import { useState, type ReactNode } from 'react'
+import { Link, useRouterState } from '@tanstack/react-router'
 import { LogIn, Search, ShoppingCart } from 'lucide-react'
 import { Button } from '@/shared/ui/components/ui/button'
-import { Input } from '@/shared/ui/components/ui/input'
-import { Label } from '@/shared/ui/components/ui/label'
 import { UnavailableButton } from '@/shared/ui/feedback/UnavailableNotice'
 import { cn } from '@/shared/ui/lib/utils'
 import { Logo } from './Logo'
@@ -73,33 +71,17 @@ export function Header({ searchSlot, cartSlot, accountSlot }: HeaderProps) {
   )
 }
 
-export function HeaderSearchButton() {
-  const [open, setOpen] = useState(false)
-  const navigate = useNavigate()
+export interface HeaderSearchButtonProps {
+  form: (close: () => void) => ReactNode
+}
 
-  function handleSubmit(event: FormEvent<HTMLFormElement>) {
-    event.preventDefault()
-    void navigate({ to: '/', search: {}, hash: 'catalogo' })
-    setOpen(false)
-  }
+export function HeaderSearchButton({ form }: HeaderSearchButtonProps) {
+  const [open, setOpen] = useState(false)
+  const close = () => setOpen(false)
 
   return (
     <div className="flex items-center gap-3">
-      {open ? (
-        <form role="search" onSubmit={handleSubmit} className="flex items-center">
-          <Label htmlFor="header-search" className="sr-only">
-            Buscar NFTs
-          </Label>
-          <Input
-            id="header-search"
-            name="q"
-            type="search"
-            placeholder="Buscar NFTs"
-            autoFocus
-            className="w-48"
-          />
-        </form>
-      ) : null}
+      {open ? <div className="w-56">{form(close)}</div> : null}
       <button
         type="button"
         aria-label="Buscar NFTs"
