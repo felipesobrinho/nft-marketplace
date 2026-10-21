@@ -5,6 +5,7 @@ import {
   formatEth,
   formatEthDiscount,
   formatEthSpoken,
+  formatEnsName,
   formatRating,
   formatTokenId,
   shortenAddress,
@@ -41,5 +42,7 @@ describe('outros formatadores', () => {
     expect(formatTokenId(42)).toBe('#0042')
     expect(formatTokenId(314)).toBe('#0314')
     expect(shortenAddress('0xA91F00000000000000000000000000000000E82C')).toBe('0xA91F…E82C')
+    expect(formatEnsName('nova.kurio')).toBe('nova.kurio.eth')
+    expect(formatEnsName('analima.eth')).toBe('analima.eth')
   })
 })
