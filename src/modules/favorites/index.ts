@@ -1,3 +1,5 @@
+import { lazyRouteComponent } from '@tanstack/react-router'
+
 export {
   favoriteKeys,
   favoritesQuery,
@@ -6,3 +8,5 @@ export {
   useToggleFavorite,
 } from './application/favorites'
 export { FavoriteButton } from './ui/FavoriteButton'
+
+export const FavoritesPage = lazyRouteComponent(() => import('./ui/FavoritesPage'), 'FavoritesPage')
