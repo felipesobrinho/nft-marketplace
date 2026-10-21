@@ -53,3 +53,4 @@ Antes do primeiro `pnpm test:e2e`, instale o navegador: `pnpm exec playwright in
 
 - `ARCHITECTURE.md`: camadas, decisões, cache, sessão, carrinho, tempo real e desvios do Figma.
 - `docs/design.md`: sistema de design (cores, tipografia, espaçamento, raios, componentes).
+- `docs/eventos.md`: transporte do tempo real, envelope dos eventos, como disparar e limitações.
