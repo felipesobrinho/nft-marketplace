@@ -1,5 +1,5 @@
-import type { NftUpdatedEvent } from '@/shared/contracts/events'
-import type { NftRecord } from '../db/schema'
+import type { NftUpdatedEvent, OrderUpdatedEvent } from '@/shared/contracts/events'
+import type { NftRecord, OrderRecord } from '../db/schema'
 
 export function nftUpdatedEvent(record: NftRecord): NftUpdatedEvent {
   return {
@@ -19,6 +19,22 @@ export function nftUpdatedEvent(record: NftRecord): NftUpdatedEvent {
         available: edition.available,
         status: edition.status,
       })),
+    },
+  }
+}
+
+export function orderUpdatedEvent(order: OrderRecord): OrderUpdatedEvent {
+  return {
+    eventId: crypto.randomUUID(),
+    type: 'order.updated',
+    resource: { type: 'order', id: order.id },
+    version: order.version,
+    occurredAt: new Date().toISOString(),
+    userId: order.userId,
+    data: {
+      status: order.status,
+      reason: order.reason,
+      transactionRef: order.transactionRef,
     },
   }
 }
