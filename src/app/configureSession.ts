@@ -2,8 +2,9 @@ import type { QueryClient } from '@tanstack/react-query'
 import { toast } from 'sonner'
 import { expireSession, onSessionEvent } from '@/modules/auth'
 import { describeAdjustment, mergeGuestCart } from '@/modules/cart'
+import { discardCheckoutDrafts } from '@/modules/checkout'
 import { configureRequestContext } from '@/shared/infrastructure/http'
-import { removeKeysWithPrefix, writeJson } from '@/shared/infrastructure/storage'
+import { writeJson } from '@/shared/infrastructure/storage'
 import type { createAppRouter } from './router'
 
 type AppRouter = ReturnType<typeof createAppRouter>
@@ -39,9 +40,10 @@ export function configureSession(router: AppRouter, queryClient: QueryClient): v
     if (previous && (event.type === 'signed-out' || switched)) {
       await queryClient.cancelQueries({ queryKey: ['user', previous] })
       queryClient.removeQueries({ queryKey: ['user', previous] })
-      removeKeysWithPrefix(`checkout:${previous}`, 'session')
     }
+    if (event.type === 'signed-out' && event.reason === 'logout') discardCheckoutDrafts(null)
     if (event.type === 'signed-in') {
+      discardCheckoutDrafts(event.session.userId)
       try {
         const adjustments = await mergeGuestCart(queryClient, event.session.userId)
         for (const adjustment of adjustments) toast.warning(describeAdjustment(adjustment))

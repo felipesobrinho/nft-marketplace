@@ -33,13 +33,17 @@ export function removeKey(key: string, kind: 'local' | 'session' = 'local'): voi
   }
 }
 
-export function removeKeysWithPrefix(prefix: string, kind: 'local' | 'session' = 'local'): void {
+export function removeKeysWithPrefix(
+  prefix: string,
+  kind: 'local' | 'session' = 'local',
+  keep?: string,
+): void {
   const target = store(kind)
   if (!target) return
   const keys: string[] = []
   for (let index = 0; index < target.length; index += 1) {
     const key = target.key(index)
-    if (key?.startsWith(PREFIX + prefix)) keys.push(key)
+    if (key?.startsWith(PREFIX + prefix) && (keep === undefined || key !== PREFIX + keep)) keys.push(key)
   }
   keys.forEach((key) => target.removeItem(key))
 }
