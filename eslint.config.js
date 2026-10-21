@@ -128,4 +128,24 @@ export default defineConfig([
       ),
     },
   },
+  {
+    files: ['src/mocks/control/panel/**/*.{ts,tsx}'],
+    extends: [reactHooks.configs.flat['recommended-latest']],
+    rules: {
+      'no-restricted-imports': restrict(
+        [
+          {
+            regex: '^@/(app|routes|modules)(/|$)',
+            message: 'O painel da demonstração só fala com os endpoints de controle.',
+          },
+          {
+            regex: '^@/shared/(ui|infrastructure)(/|$)',
+            message: 'O painel da demonstração só fala com os endpoints de controle.',
+          },
+          { group: ['@tanstack/*'], message: 'Biblioteca proibida nos mocks.' },
+        ],
+        ['axios', 'socket.io-client'],
+      ),
+    },
+  },
 ])
