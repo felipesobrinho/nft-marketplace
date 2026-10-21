@@ -11,7 +11,7 @@ import { FormField } from '@/shared/ui/form/FormField'
 import { PasswordInput } from '@/shared/ui/form/PasswordInput'
 import { useRegister } from '../application/account'
 import { safeRedirect } from '../domain/redirect'
-import { applyApiErrors } from './applyApiErrors'
+import { applyApiErrors } from '@/shared/ui/form/applyApiErrors'
 
 const registerFormSchema = registerRequestSchema
   .extend({ confirmPassword: z.string().min(1, 'Confirme a senha') })
