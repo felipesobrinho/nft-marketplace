@@ -4,6 +4,7 @@ export const apiErrorCodes = [
   'bad_request',
   'validation_error',
   'unauthenticated',
+  'invalid_credentials',
   'session_expired',
   'forbidden',
   'not_found',
