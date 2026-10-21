@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { RealtimeConnection } from '@/app/RealtimeConnection'
+import { CartHeaderLink } from '@/modules/cart'
 import { CatalogSearchForm } from '@/modules/catalog'
 import { NftUpdateAnnouncer } from '@/modules/nft'
 import { createRootRouteWithContext, HeadContent, Outlet } from '@tanstack/react-router'
@@ -8,14 +9,7 @@ import { RouteError } from '@/shared/ui/feedback/RouteError'
 import { Toaster } from '@/shared/ui/components/ui/sonner'
 import { TooltipProvider } from '@/shared/ui/components/ui/tooltip'
 import { LiveAnnouncerProvider } from '@/shared/ui/feedback/LiveAnnouncer'
-import {
-  Footer,
-  Header,
-  HeaderCartLink,
-  HeaderLoginLink,
-  HeaderSearchButton,
-  MobileNav,
-} from '@/shared/ui/layout'
+import { Footer, Header, HeaderLoginLink, HeaderSearchButton, MobileNav } from '@/shared/ui/layout'
 
 interface RouterContext {
   queryClient: QueryClient
@@ -56,7 +50,7 @@ function RootLayout() {
                   form={(close) => <CatalogSearchForm variant="header" onSubmitted={close} />}
                 />
               }
-              cartSlot={<HeaderCartLink />}
+              cartSlot={<CartHeaderLink />}
               accountSlot={<HeaderLoginLink />}
             />
             <main id="conteudo" tabIndex={-1} className="min-h-dvh flex-1 outline-none">
