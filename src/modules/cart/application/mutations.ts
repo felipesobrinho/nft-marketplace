@@ -87,6 +87,10 @@ export function useRemoveCoupon() {
   return useCartMutation(() => removeCoupon(), { successMessage: 'Cupom removido.' })
 }
 
+export function requestQuote(network: NetworkId) {
+  return createQuote(network)
+}
+
 export function quoteQuery(owner: CartOwner, network: NetworkId, cartVersion: number) {
   return queryOptions({
     queryKey: [...cartKeys.quote(owner, network), cartVersion] as const,
