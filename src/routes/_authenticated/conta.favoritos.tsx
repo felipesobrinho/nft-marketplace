@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/conta/favoritos')({
+export const Route = createFileRoute('/_authenticated/conta/favoritos')({
   head: () => ({ meta: [{ title: 'Favoritos | Kurio' }] }),
   component: FavoritesRoutePage,
 })

@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/conta/perfil')({
+export const Route = createFileRoute('/_authenticated/conta/perfil')({
   head: () => ({ meta: [{ title: 'Perfil | Kurio' }] }),
   component: ProfileRoutePage,
 })

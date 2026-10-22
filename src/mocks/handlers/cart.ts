@@ -20,7 +20,7 @@ import {
 } from '../logic/commerce'
 import { apiRoute } from './api'
 import { apiError, json, parseBody } from './respond'
-import { isResponse, optionalAuth, requireAuth } from './session'
+import { bearerToken, isResponse, requireAuth } from './session'
 
 export const CART_HEADER = 'x-cart-id'
 
@@ -38,8 +38,11 @@ async function ensureCart(id: string, userId: string | null): Promise<CartRecord
 }
 
 export async function resolveCart(request: Request): Promise<CartRecord | Response> {
-  const auth = optionalAuth(request)
-  if (auth) return ensureCart(userCartId(auth.user.id), auth.user.id)
+  if (bearerToken(request)) {
+    const auth = requireAuth(request)
+    if (isResponse(auth)) return auth
+    return ensureCart(userCartId(auth.user.id), auth.user.id)
+  }
   const guestId = request.headers.get(CART_HEADER)
   if (!guestId || !guestCartIdPattern.test(guestId)) {
     return apiError(400, 'bad_request', 'Carrinho não identificado. Recarregue a página.')

@@ -83,7 +83,7 @@ Os filtros combinam (E). `q` ignora maiúsculas e acentos e procura em nome, col
 
 ## Carrinho
 
-Logado, o carrinho é do usuário. Visitante, é o do `X-Cart-Id`. Toda resposta devolve o carrinho inteiro.
+Logado, o carrinho é do usuário. Visitante, é o do `X-Cart-Id`. Com token vencido ou inválido, o carrinho responde 401 em vez de cair no carrinho de visitante. Toda resposta devolve o carrinho inteiro.
 
 | Método e caminho            | Corpo                                                           | Erros                                         |
 | --------------------------- | --------------------------------------------------------------- | --------------------------------------------- |

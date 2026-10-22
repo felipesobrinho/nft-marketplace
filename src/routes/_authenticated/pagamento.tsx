@@ -1,6 +1,6 @@
 import { createFileRoute } from '@tanstack/react-router'
 
-export const Route = createFileRoute('/pagamento')({
+export const Route = createFileRoute('/_authenticated/pagamento')({
   head: () => ({ meta: [{ title: 'Pagamento | Kurio' }] }),
   component: CheckoutRoutePage,
 })

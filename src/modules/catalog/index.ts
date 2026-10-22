@@ -4,3 +4,4 @@ export { catalogSearchDefaults, catalogSearchSchema, type CatalogSearch, toListQ
 export { CatalogSearchForm } from './ui/CatalogSearchForm'
 
 export const HomePage = lazyRouteComponent(() => import('./ui/HomePage'), 'HomePage')
+export { HomePreview } from './ui/HomePreview'
