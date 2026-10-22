@@ -11,7 +11,7 @@
   "scripts": {
     "dev": "vite",
     "build": "tsr generate && vite build",
-    "build:demo": "tsr generate && vite build --mode demo",
+    "build:demo": "msw init && tsr generate && vite build --mode demo",
     "preview": "vite preview",
     "routes": "tsr generate",
     "typecheck": "tsr generate && tsc -p tsconfig.app.json && tsc -p tsconfig.node.json",
