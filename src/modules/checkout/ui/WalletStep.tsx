@@ -197,7 +197,7 @@ export function WalletStep({ draft, onChange, headingRef, totalLabel }: WalletSt
         <div className="flex flex-col-reverse gap-3 md:flex-row md:items-center">
           <Button
             type="button"
-            variant="ghost"
+            variant="outline"
             className="w-full md:w-fit"
             onClick={() => onChange((current) => withStep(current, 'dados'))}
           >

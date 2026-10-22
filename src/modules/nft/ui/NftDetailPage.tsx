@@ -61,14 +61,13 @@ export function NftDetailPage() {
           </li>
           <li aria-hidden="true">/</li>
           <li>
-            <Link
-              to="/"
-              hash="catalogo"
-              aria-current="page"
-              className="font-bold text-foreground hover:text-highlight"
-            >
+            <Link to="/" hash="catalogo" className="font-bold text-foreground hover:text-highlight">
               Mercado
             </Link>
+          </li>
+          <li aria-hidden="true">/</li>
+          <li aria-current="page" className="text-foreground">
+            {nft.name}
           </li>
         </ol>
       </nav>
