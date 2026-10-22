@@ -113,7 +113,7 @@ Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18
 
 ## Mocks e tempo real
 
-O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`src/shared/infrastructure/networkReady.ts`).
+O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`src/shared/infrastructure/networkReady.ts`). O arquivo `public/mockServiceWorker.js` fica fora do git e é criado pelo `msw init` no início do `pnpm build:demo`, porque a instalação com cache da Vercel não roda o postinstall do MSW.
 
 - **Banco**: `@msw/data` com `persist()`. O seed só roda quando o banco está vazio. O `persist()` grava no `localStorage` quando a página fica oculta (refresh, troca de aba, fechamento), então o estado sobrevive ao refresh.
 - **Contratos**: handlers e app usam os mesmos schemas Zod de `src/shared/contracts`; a resposta do mock passa pelo schema antes de sair. Detalhes em `docs/api.md`.
