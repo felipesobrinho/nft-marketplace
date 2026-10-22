@@ -10,8 +10,30 @@ export const http = axios.create({
   headers: { Accept: 'application/json' },
 })
 
+export interface RequestContext {
+  token: () => string | null
+  cartId: () => string | null
+  onUnauthorized: (error: ApiError) => void
+}
+
+let context: RequestContext = {
+  token: () => null,
+  cartId: () => null,
+  onUnauthorized: () => undefined,
+}
+
+export function configureRequestContext(next: Partial<RequestContext>): void {
+  context = { ...context, ...next }
+}
+
+export const CART_HEADER = 'X-Cart-Id'
+
 http.interceptors.request.use(async (config) => {
   await whenNetworkReady()
+  const token = context.token()
+  if (token) config.headers.set('Authorization', `Bearer ${token}`)
+  const cartId = context.cartId()
+  if (cartId) config.headers.set(CART_HEADER, cartId)
   return config
 })
 
@@ -52,7 +74,18 @@ export function toApiError(error: unknown): ApiError {
 
 http.interceptors.response.use(
   (response) => response,
-  (error: unknown) => Promise.reject(toApiError(error)),
+  (error: unknown) => {
+    const apiError = toApiError(error)
+    const sentToken = isAxiosError(error) && Boolean(error.config?.headers.Authorization)
+    if (
+      sentToken &&
+      apiError.status === 401 &&
+      (apiError.is('session_expired') || apiError.is('unauthenticated'))
+    ) {
+      context.onUnauthorized(apiError)
+    }
+    return Promise.reject(apiError)
+  },
 )
 
 export async function request<T>(schema: ZodType<T>, config: AxiosRequestConfig): Promise<T> {

@@ -10,6 +10,7 @@ import { MintJournal } from './MintJournal'
 import { MobileCatalogBar } from './MobileCatalogBar'
 import { PromoSection } from './PromoSection'
 import { SpotlightCard } from './SpotlightCard'
+import { FavoriteButton } from '@/modules/favorites'
 import { errorMessage } from '@/shared/domain/apiError'
 
 export function HomePage() {
@@ -71,6 +72,7 @@ export function HomePage() {
               isUpdating={isUpdating}
               onClear={clear}
               hasFilters={filterCount > 0}
+              renderFavorite={(nft) => <FavoriteButton nft={nft} variant="icon" />}
             />
             <CatalogPagination page={search.page} totalPages={list.data?.totalPages ?? 0} />
           </div>

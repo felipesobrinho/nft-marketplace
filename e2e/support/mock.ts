@@ -11,11 +11,7 @@ export interface CallOptions {
   headers?: Record<string, string>
 }
 
-export async function call<T = unknown>(
-  page: Page,
-  path: string,
-  options: CallOptions = {},
-): Promise<ApiResult<T>> {
+async function callOnce<T>(page: Page, path: string, options: CallOptions = {}): Promise<ApiResult<T>> {
   return page.evaluate(
     async ({ path, options }) => {
       const response = await fetch(path, {
@@ -32,11 +28,13 @@ export async function call<T = unknown>(
 
 export async function waitForMocks(page: Page): Promise<void> {
   await expect
-    .poll(() =>
-      page.evaluate(async () => {
-        const response = await fetch('/__mock/realtime')
-        return response.headers.get('content-type')?.includes('application/json') ?? false
-      }),
+    .poll(
+      () =>
+        page.evaluate(async () => {
+          const response = await fetch('/__mock/realtime')
+          return response.headers.get('content-type')?.includes('application/json') ?? false
+        }),
+      { timeout: 15_000 },
     )
     .toBe(true)
 }
@@ -56,6 +54,7 @@ export async function resetMocks(page: Page, scenario = 'default'): Promise<void
 }
 
 export async function setScenario(page: Page, id: string): Promise<void> {
+  await waitForMocks(page)
   const result = await call(page, '/__mock/scenario', { method: 'PUT', body: { id } })
   expect(result.status).toBe(200)
 }
@@ -67,3 +66,17 @@ export async function login(page: Page, email = 'ana@jungle.test', password = 'S
 }
 
 export const auth = (token: string) => ({ authorization: `Bearer ${token}` })
+
+export async function call<T = unknown>(
+  page: Page,
+  path: string,
+  options: CallOptions = {},
+): Promise<ApiResult<T>> {
+  try {
+    return await callOnce<T>(page, path, options)
+  } catch (error) {
+    if (!(error instanceof Error) || !error.message.includes('Failed to fetch')) throw error
+    await waitForMocks(page)
+    return callOnce<T>(page, path, options)
+  }
+}

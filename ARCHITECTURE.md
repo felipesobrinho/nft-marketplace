@@ -76,6 +76,12 @@ Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18
 - Retry só em rede, timeout e 5xx, no máximo duas vezes, com espera de 0,5 s, 1 s e 2 s (teto de 4 s). Nunca em 4xx: repetir um 409 ou 422 não muda o resultado.
 - Mutations não repetem sozinhas.
 
+## Sessão e dados privados
+
+- A sessão fica no `localStorage` em `kurio:session` (token, validade e id do usuário), então sobrevive ao refresh. O Axios põe o `Authorization` em toda requisição; sem token, manda o `X-Cart-Id` do carrinho de visitante.
+- Dado privado fica no cache sob `['user', userId, ...]` e o carrinho de visitante sob `['guest', cartId, 'cart']`. Um usuário nunca lê a chave de outro.
+- Favoritar é otimista: o coração muda na hora; se a API falhar, volta ao estado anterior e avisa. O visitante que tenta favoritar vai para o login com o caminho de volta em `redirect`.
+
 ## Mocks e tempo real
 
 O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`shared/infrastructure/networkReady.ts`).
@@ -131,3 +137,11 @@ Ações fora do escopo do desafio nunca aparentam sucesso. Elas abrem o aviso "I
 | Busca       | Todas           | só o ícone de lupa no desktop                                                                | o ícone abre um campo que grava `q` na URL do catálogo; no mobile, o campo "Explorar coleções" faz o mesmo | busca real (E12)                                                     |
 | Filtros     | Tablet e mobile | filtros só no desktop                                                                        | barra lateral a partir de 768 px; abaixo disso, botão "Filtros" com gaveta (Sheet)                         | filtros em todos os tamanhos                                         |
 | Contraste   | Campos          | erro `#ed1b2e` (4,4:1) e borda de campo `#3f2319` (1,3:1)                                    | `#ff5a5f` (6,3:1) e `#8a6646` (3,7:1)                                                                      | AA para texto e 3:1 para borda de campo                              |
+| D1          | Detalhe         | "Contrato:" com o texto de royalties e "Direitos autorais:" com o endereço do contrato       | cada rótulo com o conteúdo certo, na aba "Detalhes do NFT"                                                 | conteúdo trocado                                                     |
+| D2          | Detalhe         | chips de edição com paddings diferentes; "ABERTA" em caixa alta; mobile repetindo "1/10"     | edições vindas da API no mesmo chip, com "Aberta"; edição esgotada desabilitada                            | consistência e dado real                                             |
+| D3          | Detalhe         | botão de zoom saindo pela borda da imagem                                                    | dentro da imagem, a 12 px da borda, abrindo a imagem ampliada                                              | o botão não vaza e funciona                                          |
+| D4          | Detalhe         | divisória abaixo do preço terminando antes do fim da coluna                                  | largura total da coluna                                                                                    | alinhamento                                                          |
+| D5          | Detalhe         | "COMPRAR" e "Favoritar" no desktop; "Comprar NFT" e ícone de carrinho no mobile              | "Adicionar ao carrinho" e "Favoritar" nos dois tamanhos                                                    | mesma ação, mesmo rótulo                                             |
+| D6          | Detalhe         | mobile sem detalhes e avaliações; nota "4.8(19)"                                             | abas também no mobile; "4.8 (19)"                                                                          | mesmo conteúdo nos dois tamanhos                                     |
+| U8          | Detalhe         | seletor de quantidade sem limites                                                            | diminuir desabilitado em 1 e aumentar no limite da edição; limite 1 desabilita o seletor e mostra o motivo | evita pedido impossível                                              |
+| U9          | Detalhe         | abas "Detalhes do NFT / Avaliações" fora das margens da página                               | centralizadas, com as margens das outras seções                                                            | alinhamento                                                          |
