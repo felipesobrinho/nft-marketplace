@@ -1,6 +1,6 @@
 # Eventos em tempo real
 
-O tempo real usa Socket.IO de verdade no cliente (`socket.io-client`) e um servidor simulado pelo MSW na própria página. Nada chama setter, callback ou cache direto: todo evento sai do banco simulado, passa pelo protocolo Socket.IO e chega pelo socket.
+O cliente usa Socket.IO (`socket.io-client`) e o MSW simula o servidor na própria página. O controle do mock não altera os caches da app: grava no banco simulado e publica pelo protocolo Socket.IO; os módulos recebem o evento pelo socket e atualizam seus caches.
 
 ## Transporte
 
@@ -18,11 +18,11 @@ O MSW remove o prefixo `/socket.io/` da URL antes de comparar com o handler. Com
 
 ### Por que o cliente Socket.IO carrega depois do MSW
 
-O `engine.io-client` guarda o construtor `WebSocket` no momento em que o módulo é avaliado. Se ele carregasse junto com o bundle principal, guardaria o `WebSocket` nativo antes de o MSW instalar a interceptação, e a conexão iria para a rede. Por isso `shared/infrastructure/realtime.ts` importa `socket.io-client` de forma dinâmica, depois que o worker está pronto. De quebra, o Socket.IO sai do bundle inicial.
+O `engine.io-client` guarda o construtor `WebSocket` no momento em que o módulo é avaliado. Se ele carregasse junto com o bundle principal, guardaria o `WebSocket` nativo antes de o MSW instalar a interceptação, e a conexão iria para a rede. Por isso `src/shared/infrastructure/realtime.ts` importa `socket.io-client` de forma dinâmica, depois que o worker está pronto. De quebra, o Socket.IO sai do bundle inicial.
 
 ## Envelope
 
-Todo evento tem o mesmo formato, validado com Zod (`shared/contracts/events.ts`) antes de chegar à interface.
+Todo evento tem o mesmo formato, validado com Zod (`src/shared/contracts/events.ts`) antes de chegar à interface.
 
 ```json
 {
@@ -63,7 +63,7 @@ Cada módulo cuida do próprio cache; `src/app/RealtimeSync.tsx` só monta os ho
 | ------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
 | orders | aplica `status`, `reason` e `transactionRef` no pedido aberto se a versão for maior, e reconsulta a lista de pendentes | invalida os pedidos do usuário |
 
-As consultas REST de catálogo, detalhe e pedido registram a versão de cada recurso no filtro, então um evento com versão igual ou menor que a já vista na tela é descartado. A região `aria-live` (`NftUpdateAnnouncer`) anuncia a mudança de preço ou o esgotamento.
+As consultas REST de catálogo, detalhe e pedido registram a versão de cada recurso no filtro, então um evento com versão igual ou menor que a já vista na tela é descartado. O `NftUpdateAnnouncer` envia a mensagem ao `LiveAnnouncerProvider`, que a apresenta nas regiões `aria-live`.
 
 ## Como disparar
 
