@@ -67,14 +67,14 @@ O ESLint (`no-restricted-imports`) garante as dependências:
 
 ## Valores em ETH
 
-Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18 casas) em `shared/domain/eth`, então `0.1 + 0.2` dá `0.3` e `1.79 x 9` dá `16.11`. Um formatador único (`shared/domain/format`) mostra de 2 a 4 casas com ponto, como a maior parte do Figma. A cotação da API é a referência para fechar o pedido.
+Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18 casas) em `src/shared/domain/eth.ts`, então `0.1 + 0.2` dá `0.3` e `1.79 x 9` dá `16.11`. Um formatador único (`src/shared/domain/format.ts`) mostra de 2 a 4 casas com ponto, como a maior parte do Figma. A cotação da API é a referência para fechar o pedido.
 
 ## Erros, cache e retries
 
 - O Axios converte toda falha num `ApiError` tipado: `http` (com `status`, `code`, `fields` e `details` do envelope `{ error: { code, message, fields?, details? } }`), `network`, `timeout`, `canceled` e `invalid_response`. Toda resposta passa por um schema Zod antes de chegar ao cache.
 - Consultas: `staleTime` de 30 s, `gcTime` de 5 min, sem refetch ao focar a janela.
-- Retry só em rede, timeout e 5xx, no máximo duas vezes, com espera de 0,5 s, 1 s e 2 s (teto de 4 s). Nunca em 4xx: repetir um 409 ou 422 não muda o resultado.
-- Mutations não repetem sozinhas.
+- Consultas repetem falhas de rede, timeout e 5xx no máximo duas vezes, com esperas de 0,5 s e 1 s. A criação de pedido também repete falhas transitórias até duas vezes, com espera fixa de 0,5 s e a mesma chave de idempotência. Erros 4xx não são repetidos.
+- As outras mutations não repetem sozinhas; a criação do pedido usa a política explícita acima.
 
 ## Sessão e dados privados
 
@@ -113,7 +113,7 @@ Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18
 
 ## Mocks e tempo real
 
-O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`shared/infrastructure/networkReady.ts`).
+O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`src/shared/infrastructure/networkReady.ts`). O arquivo `public/mockServiceWorker.js` fica fora do git e é criado pelo `msw init` no início do `pnpm build:demo`, porque a instalação com cache da Vercel não roda o postinstall do MSW.
 
 - **Banco**: `@msw/data` com `persist()`. O seed só roda quando o banco está vazio. O `persist()` grava no `localStorage` quando a página fica oculta (refresh, troca de aba, fechamento), então o estado sobrevive ao refresh.
 - **Contratos**: handlers e app usam os mesmos schemas Zod de `src/shared/contracts`; a resposta do mock passa pelo schema antes de sair. Detalhes em `docs/api.md`.
@@ -143,7 +143,7 @@ Ações fora do escopo do desafio nunca aparentam sucesso. Elas abrem o aviso "I
 - Diálogos e gavetas (Radix) prendem o foco, fecham com Esc e devolvem o foco a quem abriu.
 - Campos com label visível, `aria-invalid` e erro ligado por `aria-describedby`; no envio com erro, o foco vai para o primeiro campo inválido.
 - Estado nunca só por cor: preço antigo riscado com texto para leitor de tela, edição esgotada com o texto "esgotada" no botão.
-- Região `aria-live` única (`LiveAnnouncer`) para avisos de mutation e de tempo real.
+- O `LiveAnnouncerProvider` centraliza avisos de mutations e tempo real em regiões `aria-live="polite"` e `aria-live="assertive"`; catálogo e seletor de quantidade também mantêm regiões locais para seus estados.
 - Movimento reduzido: o shimmer para e as transições ficam instantâneas.
 - `e2e/11-acessibilidade.spec.ts` roda o axe (WCAG 2.0, 2.1 e 2.2 A e AA) nas telas principais, sem violação séria ou crítica, e confere que nenhuma tela rola na horizontal em 1440, 768, 720 (zoom de 200% em 1440) e 390 e 320 no mobile. O mesmo arquivo testa teclado, foco e movimento reduzido.
 

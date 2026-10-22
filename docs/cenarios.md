@@ -7,7 +7,7 @@ Os cenários mudam o comportamento da API simulada de forma determinística: a m
 | Jeito  | Como                                                                                                              |
 | ------ | ----------------------------------------------------------------------------------------------------------------- |
 | URL    | abra qualquer tela com `?scenario=<id>`, por exemplo `/?scenario=slow`; o cenário fica guardado no `localStorage` |
-| Painel | botão "Demonstração" no canto inferior esquerdo → "Cenário ativo" → "Aplicar e recarregar"                        |
+| Painel | botão redondo de demonstração no canto inferior direito → "Cenário ativo" → "Aplicar e recarregar"                |
 | API    | `PUT /__mock/scenario` com `{ "id": "<id>" }`                                                                     |
 
 ## Como restaurar
@@ -26,26 +26,26 @@ O botão "Restaurar dados iniciais" do painel ou o `POST /__mock/reset` (corpo o
 
 ## Cenários
 
-| Id                         | Efeito                                                        | Como reproduzir na interface                                                    |
-| -------------------------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------- |
-| `default`                  | respostas entre 80 e 300 ms; pagamento confirmado em 3 s      | uso normal                                                                      |
-| `empty-catalog`            | listagem e destaques vazios                                   | abrir o início: estado vazio                                                    |
-| `slow`                     | toda chamada demora 2,5 s                                     | abrir início, detalhe ou carrinho: skeletons com shimmer                        |
-| `variable-latency`         | cada chamada demora entre 0,2 e 1,8 s, numa sequência fixa    | navegar entre filtros: indicador de atualização em segundo plano                |
-| `out-of-order`             | consultas ímpares do catálogo demoram 1,5 s e as pares 0,2 s  | trocar dois filtros em seguida: a resposta antiga chega depois e é descartada   |
-| `offline`                  | toda chamada falha na rede; o Socket.IO recusa a conexão      | abrir qualquer tela: erro de conexão com "Tentar de novo"                       |
-| `server-error`             | catálogo, destaques, detalhe e facetas respondem 503          | abrir o início: erro com nova tentativa; trocar para `default` e tentar de novo |
-| `bad-request`              | a listagem responde 400                                       | abrir o início: mensagem do envelope de erro                                    |
-| `session-expired`          | toda chamada autenticada responde 401 `session_expired`       | logado, abrir o perfil ou confirmar a compra: volta ao login e retoma depois    |
-| `forbidden`                | perfil, carteiras e pedidos respondem 403                     | abrir o perfil logado: aviso de permissão                                       |
-| `register-conflict`        | cadastro responde 409 no e-mail                               | criar conta: erro no campo de e-mail                                            |
-| `favorite-failure`         | favoritar responde 503 depois de 0,8 s                        | favoritar um NFT: o coração volta ao estado anterior e aparece o erro           |
-| `price-change-at-checkout` | no envio do pedido, o preço do primeiro item sobe 10% uma vez | confirmar a compra: a revisão mostra o preço novo e pede nova confirmação       |
-| `sold-out-at-checkout`     | no envio do pedido, a edição do primeiro item esgota uma vez  | confirmar a compra: aviso de esgotado; o item fica marcado no carrinho          |
-| `order-timeout`            | o primeiro envio cria o pedido mas só responde depois de 15 s | confirmar a compra: a app reenvia com a mesma chave e recupera o mesmo pedido   |
-| `payment-confirmed`        | igual ao padrão: pendente por 3 s e confirmado                | concluir uma compra                                                             |
-| `payment-refused`          | pendente por 3 s e recusado por saldo insuficiente            | concluir uma compra: recusa com motivo; o carrinho continua igual               |
-| `wallet-refused`           | a conexão com o provedor da carteira é recusada               | escolher a carteira no pagamento e conectar                                     |
+| Id                         | Efeito                                                                                                 | Como reproduzir na interface                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `default`                  | respostas entre 80 e 300 ms; pagamento confirmado em 3 s                                               | uso normal                                                                      |
+| `empty-catalog`            | listagem e destaques vazios                                                                            | abrir o início: estado vazio                                                    |
+| `slow`                     | toda chamada demora 2,5 s                                                                              | abrir início, detalhe ou carrinho: skeletons com shimmer                        |
+| `variable-latency`         | cada chamada demora entre 0,2 e 1,8 s, numa sequência fixa                                             | navegar entre filtros: indicador de atualização em segundo plano                |
+| `out-of-order`             | consultas ímpares do catálogo demoram 1,5 s e as pares 0,2 s                                           | trocar dois filtros em seguida: a resposta antiga chega depois e é descartada   |
+| `offline`                  | toda chamada falha na rede; o Socket.IO recusa a conexão                                               | abrir qualquer tela: erro de conexão com "Tentar de novo"                       |
+| `server-error`             | catálogo, destaques, detalhe e facetas respondem 503                                                   | abrir o início: erro com nova tentativa; trocar para `default` e tentar de novo |
+| `bad-request`              | a listagem responde 400                                                                                | abrir o início: mensagem do envelope de erro                                    |
+| `session-expired`          | toda chamada autenticada responde 401 `session_expired`                                                | logado, abrir o perfil ou confirmar a compra: volta ao login e retoma depois    |
+| `forbidden`                | perfil, carteiras e pedidos respondem 403                                                              | abrir o perfil logado: aviso de permissão                                       |
+| `register-conflict`        | cadastro responde 409 no campo de e-mail neste cenário; conflitos normais também podem ser por usuário | criar conta: erro no campo de e-mail                                            |
+| `favorite-failure`         | favoritar responde 503 depois de 0,8 s                                                                 | favoritar um NFT: o coração volta ao estado anterior e aparece o erro           |
+| `price-change-at-checkout` | no envio do pedido, o preço do primeiro item sobe 10% uma vez                                          | confirmar a compra: a revisão mostra o preço novo e pede nova confirmação       |
+| `sold-out-at-checkout`     | no envio do pedido, a edição do primeiro item esgota uma vez                                           | confirmar a compra: aviso de esgotado; o item fica marcado no carrinho          |
+| `order-timeout`            | o primeiro envio cria o pedido mas só responde depois de 15 s                                          | confirmar a compra: a app reenvia com a mesma chave e recupera o mesmo pedido   |
+| `payment-confirmed`        | igual ao padrão: pendente por 3 s e confirmado                                                         | concluir uma compra                                                             |
+| `payment-refused`          | pendente por 3 s e recusado por saldo insuficiente                                                     | concluir uma compra: recusa com motivo; o carrinho continua igual               |
+| `wallet-refused`           | a conexão com o provedor da carteira é recusada                                                        | escolher a carteira no pagamento e conectar                                     |
 
 ## Endpoints de controle
 

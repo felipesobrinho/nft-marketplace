@@ -2,6 +2,8 @@
 
 Marketplace de NFTs em React e TypeScript feito para o desafio de frontend da Jungle Gaming. Catálogo, detalhe, carrinho, pagamento, conta e tempo real funcionam contra uma API simulada com MSW, sem backend.
 
+Demonstração publicada: https://nft-marketplace-gray-two.vercel.app (mesmo build de `pnpm build:demo`, com os mocks rodando no navegador).
+
 ## Requisitos
 
 | Ferramenta | Versão                         | Observação                                 |
@@ -10,6 +12,8 @@ Marketplace de NFTs em React e TypeScript feito para o desafio de frontend da Ju
 | pnpm       | 11.28.7                        | vem pelo corepack, que acompanha o Node 22 |
 
 O pnpm 12 não roda pelo corepack do Node 22, por isso o projeto fixa o 11. Se a máquina já tiver outro pnpm global, use `corepack pnpm` no lugar de `pnpm` em todos os comandos.
+
+No Windows, clone o projeto num caminho curto (por exemplo `C:\dev\nft-marketplace`). O `node_modules` do pnpm cria caminhos longos, e numa pasta já profunda o Vitest falha ao iniciar com `ERR_PACKAGE_IMPORT_NOT_DEFINED`.
 
 ## Como rodar
 
@@ -32,7 +36,7 @@ Cupons: `JUNGLE10` (10%, válido) e `VELHO20` (expirado). As senhas existem só 
 
 ## Cenários e reset
 
-A API simulada tem 18 cenários determinísticos (lentidão, falhas, sessão expirada, preço que muda na compra, timeout do pedido, pagamento recusado etc.). Escolha pela URL (`/?scenario=slow`), pelo painel "Demonstração" no canto inferior esquerdo ou por `PUT /__mock/scenario`. "Restaurar dados iniciais" no painel ou `POST /__mock/reset` volta ao seed. A lista completa, com o passo a passo para reproduzir cada falha, está em `docs/cenarios.md`.
+A API simulada tem 18 cenários determinísticos (lentidão, falhas, sessão expirada, preço que muda na compra, timeout do pedido, pagamento recusado etc.). Escolha pela URL (`/?scenario=slow`), pelo painel de demonstração (botão redondo no canto inferior direito) ou por `PUT /__mock/scenario`. "Restaurar dados iniciais" no painel ou `POST /__mock/reset` volta ao seed. A lista completa, com o passo a passo para reproduzir cada falha, está em `docs/cenarios.md`.
 
 ## Variáveis de ambiente
 
@@ -77,3 +81,4 @@ Para atualizar as referências do Linux depois de uma mudança visual intenciona
 - `docs/api.md`: contratos REST, envelope de erro e códigos.
 - `docs/eventos.md`: transporte do tempo real, envelope dos eventos, como disparar e limitações.
 - `docs/cenarios.md`: cenários, dados iniciais, endpoints de controle e persistência.
+- `docs/lighthouse.md`: medianas do Lighthouse, ambiente da medição e análise do resultado no mobile.

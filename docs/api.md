@@ -17,32 +17,34 @@ A API é simulada pelo MSW, mas segue um contrato fixo: cada corpo de requisiç�
 
 ## Envelope de erro
 
-Toda falha responde no mesmo formato:
+Toda resposta HTTP de erro segue o mesmo formato:
 
 ```json
 { "error": { "code": "out_of_stock", "message": "Esta edição esgotou.", "fields": {}, "details": {} } }
 ```
 
-`fields` liga o erro ao campo do formulário (mesma chave do corpo). `details` traz dados para a interface reagir, como a cotação nova num 409.
+`fields` liga o erro ao campo do formulário (mesma chave do corpo). `details` traz dados para a interface reagir, como a cotação nova num 409. Falhas de rede e timeout não têm corpo HTTP; o Axios as converte em `ApiError` com `kind` `network` ou `timeout`.
 
-| Status | `code`                              | Quando                                                                          |
-| ------ | ----------------------------------- | ------------------------------------------------------------------------------- |
-| 400    | `bad_request`                       | parâmetro de busca inválido, cabeçalho obrigatório ausente                      |
-| 401    | `unauthenticated`                   | sem token ou token desconhecido                                                 |
-| 401    | `session_expired`                   | token vencido; a app guarda o contexto e manda para o login                     |
-| 401    | `invalid_credentials`               | e-mail ou senha incorretos no login (não dispara o fluxo de sessão expirada)    |
-| 403    | `forbidden`                         | sem permissão (cenário `forbidden`)                                             |
-| 404    | `not_found`                         | recurso inexistente ou de outro usuário                                         |
-| 409    | `out_of_stock`                      | edição esgotada ou estoque menor que o pedido                                   |
-| 409    | `quantity_limit`                    | passou do limite por pedido da edição (`details.max`)                           |
-| 409    | `quote_outdated`                    | preço, disponibilidade, cupom ou taxa mudaram desde a revisão (`details.quote`) |
-| 409    | `quote_expired`                     | cotação vencida (`details.quote`)                                               |
-| 409    | `account_conflict`                  | e-mail, usuário ou papel de carteira já em uso (`fields`)                       |
-| 409    | `idempotency_conflict`              | mesma `Idempotency-Key` com corpo diferente                                     |
-| 409    | `wallet_refused`                    | o provedor recusou a conexão da carteira                                        |
-| 422    | `validation_error`                  | corpo inválido (`fields`)                                                       |
-| 422    | `coupon_invalid` / `coupon_expired` | cupom inexistente ou vencido (`fields.code`)                                    |
-| 503    | `service_unavailable`               | falha transitória; a app repete até 2 vezes                                     |
+| Status | `code`                              | Quando                                                                                                                              |
+| ------ | ----------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
+| 400    | `bad_request`                       | parâmetro de busca inválido, cabeçalho obrigatório ausente                                                                          |
+| 401    | `unauthenticated`                   | sem token ou token desconhecido                                                                                                     |
+| 401    | `session_expired`                   | token vencido; a app guarda o contexto e manda para o login                                                                         |
+| 401    | `invalid_credentials`               | e-mail ou senha incorretos no login (não dispara o fluxo de sessão expirada)                                                        |
+| 403    | `forbidden`                         | sem permissão (cenário `forbidden`)                                                                                                 |
+| 404    | `not_found`                         | recurso inexistente ou de outro usuário                                                                                             |
+| 409    | `out_of_stock`                      | edição esgotada ou estoque menor que o pedido                                                                                       |
+| 409    | `quantity_limit`                    | passou do limite por pedido da edição (`details.max`)                                                                               |
+| 409    | `quote_outdated`                    | preço, disponibilidade, cupom ou taxa mudaram desde a revisão (`details.quote`)                                                     |
+| 409    | `quote_expired`                     | cotação vencida (`details.quote`)                                                                                                   |
+| 409    | `account_conflict`                  | e-mail, usuário ou papel de carteira já em uso (`fields`)                                                                           |
+| 409    | `idempotency_conflict`              | mesma `Idempotency-Key` com corpo diferente                                                                                         |
+| 409    | `wallet_refused`                    | o provedor recusou a conexão da carteira                                                                                            |
+| 422    | `validation_error`                  | corpo inválido (`fields`)                                                                                                           |
+| 422    | `coupon_invalid` / `coupon_expired` | cupom inexistente ou vencido (`fields.code`)                                                                                        |
+| 503    | `service_unavailable`               | falha transitória; consultas e criação de pedido podem repetir até 2 vezes; outras operações de escrita não repetem automaticamente |
+
+O contrato compartilhado também admite `edition_unavailable`, `price_changed` e `internal_error`, mas nenhum handler atual retorna esses valores como erro HTTP.
 
 O Axios converte tudo isso em `ApiError` com `kind` (`http`, `network`, `timeout`, `canceled`, `invalid_response`), `status`, `code`, `fields` e `details`.
 
@@ -69,7 +71,7 @@ O Axios converte tudo isso em `ApiError` com `kind` (`http`, `network`, `timeout
 
 Os filtros combinam (E). `q` ignora maiúsculas e acentos e procura em nome, coleção, criador e atributos. Preço é comparado em wei. Empate na ordenação cai para o `id`, então a ordem é estável. `priceRange` é do catálogo inteiro, para os limites do filtro de preço.
 
-`NftSummary`: `id`, `name`, `tokenId`, `collection { id, name }`, `network`, `image { src, alt }`, `price` (menor preço entre as edições disponíveis), `previousPrice`, `badge` (`rare`, `new` ou nulo), `availability`, `listedAt`, `version`.
+`NftSummary`: `id`, `name`, `tokenId`, `collection { id, name }`, `network`, `image { src, alt }`, `price` (menor preço entre as edições disponíveis; se todas estiverem esgotadas, menor preço entre todas), `previousPrice`, `badge` (`rare`, `new` ou nulo), `availability`, `listedAt`, `version`.
 
 `NftDetail` acrescenta `description`, `story[]`, `creator`, `contractAddress`, `royaltiesBps`, `attributes[]`, `rating { average, count }`, `reviews[]` e `editions[]` com `{ id, label, supply, available, price, maxPerOrder, status }`. `supply` e `available` nulos indicam edição aberta.
 
@@ -109,7 +111,7 @@ O merge soma as quantidades da mesma edição, respeita o limite e descarta o qu
 
 - O desconto é calculado em pontos-base sobre o subtotal.
 - A taxa de rede é fixa por rede: Ethereum 0.016, Polygon 0.002, Solana 0.001.
-- `issues` lista o que impede a compra: `out_of_stock`, `quantity_limit` e `coupon_expired`. Um cupom expirado não é aplicado.
+- `issues` pode conter `out_of_stock`, `quantity_limit` e `coupon_expired`. Só falta de estoque e excesso do limite bloqueiam a compra; um cupom expirado é descartado e a compra pode continuar sem o desconto. O schema também aceita `price_changed`, mas o cálculo atual da cotação não emite esse issue; mudanças de preço são detectadas ao comparar cotações.
 
 ## Pedidos (sessão obrigatória)
 

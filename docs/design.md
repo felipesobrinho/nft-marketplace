@@ -1,6 +1,6 @@
 # Sistema de design
 
-O Figma da Kurio tem a identidade certa, mas usa 57 combinações de fonte, 30 raios e paddings diferentes em componentes iguais. Este documento fixa um padrão só. Os tokens moram no `@theme` de `src/app/styles.css`; as utilities padrão do Tailwind de cor, texto, raio e sombra foram removidas para que nada fora da escala compile.
+O Figma da Kurio tem a identidade certa, mas usa 57 combinações de fonte, 30 raios e paddings diferentes em componentes iguais. Este documento fixa um padrão só. Os tokens moram no `@theme` de `src/app/styles.css`; as escalas padrão de cor, texto, raio e sombra do Tailwind foram zeradas e declaradas segundo o projeto. As utilities de cores básicas transparent, current, white e black permanecem disponíveis.
 
 ## Cores
 
@@ -74,9 +74,9 @@ Um componente por função, usado nas duas larguras. Primitivos do shadcn em `sr
 
 | Componente              | Regra                                                                                                                                                  |
 | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| Button                  | variantes `default`, `outline`, `ghost`, `link`; altura 44 (36 no `sm`); rótulo centralizado, sem caixa alta, peso 700                                 |
+| Button                  | variantes `default`, `outline`, `ghost`, `link`, `secondary` e `destructive`; altura 44 (36 no `sm`); rótulo centralizado, sem caixa alta, peso 700    |
 | Field                   | label sempre visível, dica, erro ligado ao campo por `aria-describedby`, `aria-invalid`, asterisco `coral` com texto "obrigatório" para leitor de tela |
-| Input, Select, Textarea | 44 de altura, borda `input`, raio `sm`, padding lateral 16                                                                                             |
+| Input, Select, Textarea | Input e Select: altura 44; Textarea: altura mínima 112; borda `input`, raio `sm`, padding lateral 16                                                   |
 | Checkbox, RadioCard     | substituem o radio sozinho do Figma ("Usar outra carteira?", "Igual à carteira principal")                                                             |
 | QuantityStepper         | um só para detalhe, carrinho desktop e mobile; botões redondos de 44                                                                                   |
 | NftCard                 | mídia quadrada com raio `lg` e o mesmo respiro nos quatro lados; preço antigo riscado com texto para leitor de tela                                    |
