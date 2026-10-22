@@ -7,7 +7,7 @@ Os cenários mudam o comportamento da API simulada de forma determinística: a m
 | Jeito  | Como                                                                                                              |
 | ------ | ----------------------------------------------------------------------------------------------------------------- |
 | URL    | abra qualquer tela com `?scenario=<id>`, por exemplo `/?scenario=slow`; o cenário fica guardado no `localStorage` |
-| Painel | botão "Demonstração" no canto inferior esquerdo → "Cenário ativo" → "Aplicar e recarregar"                        |
+| Painel | botão redondo de demonstração no canto inferior direito → "Cenário ativo" → "Aplicar e recarregar"                |
 | API    | `PUT /__mock/scenario` com `{ "id": "<id>" }`                                                                     |
 
 ## Como restaurar
