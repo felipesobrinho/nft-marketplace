@@ -49,3 +49,26 @@ jobs:
             playwright-report
             test-results
           retention-days: 14
+
+  visual:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    needs: checks
+    steps:
+      - uses: actions/checkout@v4
+      - uses: pnpm/action-setup@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: .nvmrc
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm exec playwright install --with-deps chromium
+      - run: pnpm test:visual --update-snapshots=missing
+      - uses: actions/upload-artifact@v4
+        if: ${{ !cancelled() }}
+        with:
+          name: visual-snapshots
+          path: |
+            e2e/visual.spec.ts-snapshots
+            test-results
+          retention-days: 14
