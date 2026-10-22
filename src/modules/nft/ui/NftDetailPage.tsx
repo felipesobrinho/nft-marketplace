@@ -20,9 +20,13 @@ export function NftDetailPage() {
   const { nftId } = useParams({ from: '/nft/$nftId' })
   const { data: nft } = useSuspenseQuery(nftDetailQuery(nftId))
   const [selection, setSelection] = useState<Selection | null>(null)
+  const fallback = defaultEdition(nft)
+
+  if (selection?.nftId !== nft.id) {
+    setSelection({ nftId: nft.id, editionId: fallback.id, quantity: 1 })
+  }
 
   const current = selection?.nftId === nft.id ? selection : null
-  const fallback = defaultEdition(nft)
   const editionId =
     current && nft.editions.some((item) => item.id === current.editionId) ? current.editionId : fallback.id
   const edition = nft.editions.find((item) => item.id === editionId) ?? fallback
