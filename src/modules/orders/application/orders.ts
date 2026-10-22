@@ -6,6 +6,7 @@ import { catalogKeys } from '@/modules/catalog'
 import { nftKeys } from '@/modules/nft'
 import type { CreateOrderRequest, Order } from '@/shared/contracts/commerce'
 import { isApiError } from '@/shared/domain/apiError'
+import { realtime } from '@/shared/infrastructure/realtime'
 import { createOrder, fetchOrder, fetchPendingOrders } from '../infrastructure/ordersApi'
 
 export const PENDING_POLL_MS = 1_000
@@ -20,7 +21,11 @@ export const orderKeys = {
 export function orderQuery(userId: string, orderId: string) {
   return queryOptions({
     queryKey: orderKeys.detail(userId, orderId),
-    queryFn: ({ signal }) => fetchOrder(orderId, signal),
+    queryFn: async ({ signal }) => {
+      const order = await fetchOrder(orderId, signal)
+      realtime.observe('order', order.id, order.version)
+      return order
+    },
     refetchInterval: (query) => (query.state.data?.status === 'pending' ? PENDING_POLL_MS : false),
   })
 }
@@ -76,4 +81,36 @@ export function useCreateOrder() {
       void queryClient.invalidateQueries({ queryKey: orderKeys.pending(userId) })
     },
   })
+}
+
+export function useOrderRealtime(): void {
+  const userId = useCurrentUserId()
+  const queryClient = useQueryClient()
+
+  useEffect(() => {
+    if (!userId) return
+    const offUpdate = realtime.subscribe('order.updated', (event) => {
+      const key = orderKeys.detail(userId, event.resource.id)
+      queryClient.setQueryData<Order>(key, (order) =>
+        order && order.version < event.version
+          ? {
+              ...order,
+              status: event.data.status,
+              reason: event.data.reason,
+              transactionRef: event.data.transactionRef,
+              updatedAt: event.occurredAt,
+              version: event.version,
+            }
+          : order,
+      )
+      void queryClient.invalidateQueries({ queryKey: orderKeys.pending(userId) })
+    })
+    const offReconnect = realtime.onReconnect(() => {
+      void queryClient.invalidateQueries({ queryKey: orderKeys.all(userId) })
+    })
+    return () => {
+      offUpdate()
+      offReconnect()
+    }
+  }, [queryClient, userId])
 }
