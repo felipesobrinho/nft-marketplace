@@ -176,7 +176,7 @@ export function DemoPanel() {
   }
 
   return (
-    <div className="fixed bottom-24 left-4 z-50 flex flex-col items-start gap-2 md:right-4 md:bottom-4 md:left-auto md:items-end">
+    <div className="fixed right-4 bottom-24 z-50 flex flex-col items-end gap-2 md:bottom-4">
       {isOpen && (
         <section
           id="painel-demo-conteudo"
@@ -324,9 +324,21 @@ export function DemoPanel() {
         onClick={() => setIsOpen((prev) => !prev)}
         aria-expanded={isOpen}
         aria-controls="painel-demo-conteudo"
-        className="rounded-full bg-surface-raised border border-primary px-4 h-11 text-small font-bold text-highlight cursor-pointer"
+        title="Demonstração: cenários e eventos da API simulada"
+        className="inline-flex size-11 cursor-pointer items-center justify-center rounded-full border border-primary bg-surface-raised text-highlight"
       >
-        Demonstração
+        <svg
+          aria-hidden="true"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+          strokeLinecap="round"
+          className="size-5"
+        >
+          <path d="M21 4h-7M10 4H3M21 12h-9M8 12H3M21 20h-5M12 20H3M14 2v4M8 10v4M16 18v4" />
+        </svg>
+        <span className="sr-only">Demonstração</span>
       </button>
     </div>
   )
