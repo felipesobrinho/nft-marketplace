@@ -1,6 +1,7 @@
 import { lazyRouteComponent } from '@tanstack/react-router'
 export { cartKeys, cartQuery, useAddToCart, useCart, useCartCount, useCartOwner } from './application/queries'
 export { getCartId, resetCartId } from './infrastructure/cartId'
+export { useCartChangeNotice, useCartRealtime } from './application/realtime'
 export { CartHeaderLink } from './ui/CartHeaderLink'
 export { describeAdjustment, mergeGuestCart } from './application/merge'
 export {

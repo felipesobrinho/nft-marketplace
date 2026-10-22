@@ -7,6 +7,7 @@ import { ErrorState } from '@/shared/ui/feedback/ErrorState'
 import { MobileTopBar } from '@/shared/ui/layout/MobileTopBar'
 import { useCart } from '../application/queries'
 import { useCartQuote } from '../application/mutations'
+import { useCartChangeNotice } from '../application/realtime'
 import { AlsoViewed } from './AlsoViewed'
 import { CartLine, CartTableHeader } from './CartLine'
 import { CartSkeleton } from './CartSkeleton'
@@ -41,6 +42,7 @@ export function CartPage() {
   const cart = useCart()
   const data = cart.data
   const quote = useCartQuote('ethereum', data)
+  const notice = useCartChangeNotice()
   const blockedId = useId()
 
   const items = data?.items ?? []
@@ -78,43 +80,56 @@ export function CartPage() {
               }
             />
           ) : (
-            <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_21rem] xl:gap-12">
-              <div role="table" aria-label="Itens do carrinho" className="flex flex-col gap-3">
-                <CartTableHeader />
-                {items.map((item) => (
-                  <CartLine key={item.id} item={item} />
-                ))}
-              </div>
-              <div className="xl:sticky xl:top-24">
-                <OrderSummary
-                  quote={quote.data}
-                  isLoading={quote.isPending}
-                  isError={quote.isError}
-                  onRetry={() => void quote.refetch()}
-                  beforeRows={<CouponForm coupon={data.coupon} />}
+            <>
+              {notice.message ? (
+                <div
+                  data-cart-notice
+                  className="mb-6 flex flex-wrap items-center justify-between gap-3 border-l-4 border-primary bg-surface-raised p-4 text-small text-foreground"
                 >
-                  <div className="flex flex-col gap-3">
-                    {blocked ? (
-                      <>
-                        <Button type="button" disabled aria-describedby={blockedId} className="w-full">
-                          Conectar e finalizar
+                  <p>{notice.message}</p>
+                  <Button type="button" variant="link" size="sm" onClick={notice.dismiss}>
+                    Entendi
+                  </Button>
+                </div>
+              ) : null}
+              <div className="grid items-start gap-8 xl:grid-cols-[minmax(0,1fr)_21rem] xl:gap-12">
+                <div role="table" aria-label="Itens do carrinho" className="flex flex-col gap-3">
+                  <CartTableHeader />
+                  {items.map((item) => (
+                    <CartLine key={item.id} item={item} />
+                  ))}
+                </div>
+                <div className="xl:sticky xl:top-24">
+                  <OrderSummary
+                    quote={quote.data}
+                    isLoading={quote.isPending}
+                    isError={quote.isError}
+                    onRetry={() => void quote.refetch()}
+                    beforeRows={<CouponForm coupon={data.coupon} />}
+                  >
+                    <div className="flex flex-col gap-3">
+                      {blocked ? (
+                        <>
+                          <Button type="button" disabled aria-describedby={blockedId} className="w-full">
+                            Conectar e finalizar
+                          </Button>
+                          <p id={blockedId} className="text-small text-muted-foreground">
+                            Remova os itens esgotados para continuar.
+                          </p>
+                        </>
+                      ) : (
+                        <Button asChild className="w-full">
+                          <Link to="/pagamento">Conectar e finalizar</Link>
                         </Button>
-                        <p id={blockedId} className="text-small text-muted-foreground">
-                          Remova os itens esgotados para continuar.
-                        </p>
-                      </>
-                    ) : (
-                      <Button asChild className="w-full">
-                        <Link to="/pagamento">Conectar e finalizar</Link>
+                      )}
+                      <Button asChild variant="link">
+                        <Link to="/">Continuar explorando</Link>
                       </Button>
-                    )}
-                    <Button asChild variant="link">
-                      <Link to="/">Continuar explorando</Link>
-                    </Button>
-                  </div>
-                </OrderSummary>
+                    </div>
+                  </OrderSummary>
+                </div>
               </div>
-            </div>
+            </>
           )}
         </div>
         <AlsoViewed excludeNftIds={items.map((item) => item.nftId)} />
