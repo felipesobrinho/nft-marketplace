@@ -36,6 +36,53 @@ function preloadFonts(): Plugin {
   }
 }
 
+function preloadMocks(): Plugin {
+  return {
+    name: 'kurio:preload-mocks',
+    apply: 'build',
+    transformIndexHtml: {
+      order: 'post',
+      handler(html, ctx) {
+        const chunks = Object.values(ctx.bundle ?? {})
+        const entry = chunks.find(
+          (chunk) =>
+            chunk.type === 'chunk' &&
+            (chunk.facadeModuleId ?? '').replace(/\\/g, '/').endsWith('/src/mocks/browser.ts'),
+        )
+        if (!entry || entry.type !== 'chunk') return []
+        return [entry.fileName, ...entry.imports]
+          .filter((file) => !html.includes(file))
+          .map((file) => ({
+            tag: 'link',
+            attrs: { rel: 'modulepreload', href: `/${file}`, crossorigin: '', fetchpriority: 'low' },
+            injectTo: 'head' as const,
+          }))
+      },
+    },
+  }
+}
+
+function inlineStyles(): Plugin {
+  return {
+    name: 'kurio:inline-styles',
+    apply: 'build',
+    enforce: 'post',
+    generateBundle(_options, bundle) {
+      const html = bundle['index.html']
+      if (!html || html.type !== 'asset' || typeof html.source !== 'string') return
+      let source = html.source
+      for (const [fileName, asset] of Object.entries(bundle)) {
+        if (asset.type !== 'asset' || !fileName.endsWith('.css') || typeof asset.source !== 'string') continue
+        const link = new RegExp(`<link rel="stylesheet"[^>]*href="/${fileName}"[^>]*>`)
+        if (!link.test(source)) continue
+        source = source.replace(link, () => `<style>${String(asset.source)}</style>`)
+        delete bundle[fileName]
+      }
+      html.source = source
+    },
+  }
+}
+
 export default defineConfig({
   plugins: [
     tanstackRouter({
@@ -49,6 +96,8 @@ export default defineConfig({
     react(),
     tailwindcss(),
     preloadFonts(),
+    preloadMocks(),
+    inlineStyles(),
   ],
   resolve: {
     alias: {
