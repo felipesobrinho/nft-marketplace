@@ -13,3 +13,5 @@ public/mockServiceWorker.js
 .vercel
 .DS_Store
 Thumbs.db
+e2e/**/*-snapshots/*-win32.png
+e2e/**/*-snapshots/*-darwin.png

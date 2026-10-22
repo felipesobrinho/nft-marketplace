@@ -13,7 +13,7 @@ export default defineConfig({
   timeout: 30_000,
   expect: {
     timeout: 7_000,
-    toHaveScreenshot: { animations: 'disabled', caret: 'hide', maxDiffPixelRatio: 0.01 },
+    toHaveScreenshot: { animations: 'disabled', caret: 'hide', scale: 'css', maxDiffPixelRatio: 0.01 },
   },
   reporter: [['html', { open: 'never' }], ['list']],
   use: {
