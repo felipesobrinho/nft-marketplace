@@ -47,15 +47,36 @@ Todo evento tem o mesmo formato, validado com Zod (`shared/contracts/events.ts`)
 | `nft.updated`   | `nft`   | `name`, `price`, `previousPrice`, `availability`, `editions[]` com `id`, `price`, `available` e `status` | atualiza preço e disponibilidade no catálogo, detalhe e carrinho; anuncia a mudança na região `aria-live` |
 | `order.updated` | `order` | `status` (`pending`, `confirmed`, `refused`), `reason`, `transactionRef`                                 | atualiza o pedido e mostra confirmação ou recusa                                                          |
 
+## Na interface
+
+Cada módulo cuida do próprio cache; `src/app/RealtimeSync.tsx` só monta os hooks. Todos assinam no `useEffect` e soltam o listener no retorno.
+
+| Módulo    | `nft.updated`                                                                                                                                                    | Reconexão                   |
+| --------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| catalog   | troca preço, preço anterior e disponibilidade nas listas e nos destaques, e marca as listas como desatualizadas para a próxima visita                            | invalida todo o catálogo    |
+| nft       | troca preço, estoque e situação das edições no detalhe; a edição escolhida continua escolhida e, se esgotar, o botão vira "Edição esgotada"                      | invalida os detalhes        |
+| favorites | troca preço e disponibilidade na lista de interesse                                                                                                              | invalida a lista            |
+| cart      | se o NFT está no carrinho, reconsulta o carrinho e a cotação; a página do carrinho mostra qual edição mudou e quanto                                             | invalida carrinho e cotação |
+| checkout  | a cotação nova chega pelo carrinho; se a revisão estiver aberta, aparece a lista do que mudou e o botão pede nova confirmação; edição esgotada bloqueia a compra | igual ao carrinho           |
+
+| Módulo | `order.updated`                                                                                                        | Reconexão                      |
+| ------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------ |
+| orders | aplica `status`, `reason` e `transactionRef` no pedido aberto se a versão for maior, e reconsulta a lista de pendentes | invalida os pedidos do usuário |
+
+As consultas REST de catálogo, detalhe e pedido registram a versão de cada recurso no filtro, então um evento com versão igual ou menor que a já vista na tela é descartado. A região `aria-live` (`NftUpdateAnnouncer`) anuncia a mudança de preço ou o esgotamento.
+
 ## Como disparar
 
 Os endpoints de controle existem só no MSW. Toda mudança passa pelo banco simulado e sai pelo REST e pelo socket ao mesmo tempo.
 
-| Endpoint                           | Corpo                                       | O que faz                                                                                       |
-| ---------------------------------- | ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
-| `POST /__mock/events/nft-updated`  | `{ nftId, price?, editionId?, available? }` | grava a mudança, aumenta a versão do NFT e emite `nft.updated`; responde `{ event, delivered }` |
-| `POST /__mock/realtime/disconnect` | `{}`                                        | derruba todas as conexões; o cliente reconecta sozinho                                          |
-| `GET /__mock/realtime`             | —                                           | número de conexões abertas                                                                      |
+| Endpoint                             | Corpo                                       | O que faz                                                                                       |
+| ------------------------------------ | ------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `POST /__mock/events/nft-updated`    | `{ nftId, price?, editionId?, available? }` | grava a mudança, aumenta a versão do NFT e emite `nft.updated`; responde `{ event, delivered }` |
+| `POST /__mock/realtime/disconnect`   | `{}`                                        | derruba todas as conexões; o cliente reconecta sozinho                                          |
+| `POST /__mock/events/order-updated`  | `{ orderId, status, reason? }`              | liquida o pedido pendente como `confirmed` ou `refused` e emite `order.updated`                 |
+| `POST /__mock/events/replay`         | `{ type?, mode }` (`duplicate` ou `stale`)  | reenvia o último evento igual (`duplicate`) ou com versão menor e `eventId` novo (`stale`)      |
+| `POST /__mock/orders/settle-pending` | `{}`                                        | liquida na hora todos os pedidos pendentes                                                      |
+| `GET /__mock/realtime`               | —                                           | número de conexões abertas                                                                      |
 
 ## Limitações conhecidas
 
