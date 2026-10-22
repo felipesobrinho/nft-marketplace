@@ -1,3 +1,4 @@
+import { http } from 'msw'
 import { setupWorker } from 'msw/browser'
 import { controlHandlers } from './control/handlers'
 import { openDb } from './db'
@@ -16,9 +17,13 @@ import { resumePendingSettlements } from './services/orders'
 
 export async function startMocks(): Promise<void> {
   initScenario()
-  await openDb()
-  resumePendingSettlements()
+  const dbReady = openDb().then(() => resumePendingSettlements())
+  const waitForDb = async () => {
+    await dbReady
+  }
   const worker = setupWorker(
+    http.all('/api/*', waitForDb),
+    http.all('/__mock/*', waitForDb),
     ...controlHandlers,
     ...authHandlers,
     ...nftHandlers,
@@ -33,9 +38,12 @@ export async function startMocks(): Promise<void> {
       acceptConnections: () => !isScenario('offline'),
     }),
   )
-  await worker.start({
-    onUnhandledRequest: 'bypass',
-    quiet: true,
-    serviceWorker: { url: '/mockServiceWorker.js' },
-  })
+  await Promise.all([
+    dbReady,
+    worker.start({
+      onUnhandledRequest: 'bypass',
+      quiet: true,
+      serviceWorker: { url: '/mockServiceWorker.js' },
+    }),
+  ])
 }
