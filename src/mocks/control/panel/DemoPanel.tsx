@@ -176,7 +176,7 @@ export function DemoPanel() {
   }
 
   return (
-    <div className="fixed z-50 bottom-24 left-4 md:bottom-4 flex flex-col items-start gap-2">
+    <div className="fixed bottom-24 left-4 z-50 flex flex-col items-start gap-2 md:right-4 md:bottom-4 md:left-auto md:items-end">
       {isOpen && (
         <section
           id="painel-demo-conteudo"

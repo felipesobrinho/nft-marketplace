@@ -1,15 +1,36 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, stripSearchParams } from '@tanstack/react-router'
+import {
+  catalogSearchDefaults,
+  catalogSearchSchema,
+  collectionsQuery,
+  featuredQuery,
+  HomePage,
+  networksQuery,
+  nftListQuery,
+  toListQuery,
+} from '@/modules/catalog'
 
 export const Route = createFileRoute('/')({
-  head: () => ({ meta: [{ title: 'Kurio | Marketplace de NFTs' }] }),
+  validateSearch: catalogSearchSchema,
+  search: { middlewares: [stripSearchParams(catalogSearchDefaults)] },
+  loaderDeps: ({ search }) => ({ search }),
+  loader: ({ context: { queryClient }, deps: { search } }) => {
+    void Promise.all([
+      queryClient.ensureQueryData(nftListQuery(toListQuery(search))),
+      queryClient.ensureQueryData(featuredQuery()),
+      queryClient.ensureQueryData(collectionsQuery()),
+      queryClient.ensureQueryData(networksQuery()),
+    ]).catch(() => undefined)
+  },
+  head: () => ({
+    meta: [
+      { title: 'Kurio | Marketplace de NFTs' },
+      {
+        name: 'description',
+        content:
+          'Descubra, filtre e colecione NFTs de criadores emergentes e consagrados na Kurio. Arte digital com procedência registrada.',
+      },
+    ],
+  }),
   component: HomePage,
 })
-
-function HomePage() {
-  return (
-    <section className="page py-16">
-      <p className="text-small text-subtle">Bem-vindo à Kurio</p>
-      <h1 className="text-display-sm font-bold md:text-display">Seja dono do futuro da arte digital</h1>
-    </section>
-  )
-}
