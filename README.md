@@ -11,6 +11,8 @@ Marketplace de NFTs em React e TypeScript feito para o desafio de frontend da Ju
 
 O pnpm 12 não roda pelo corepack do Node 22, por isso o projeto fixa o 11. Se a máquina já tiver outro pnpm global, use `corepack pnpm` no lugar de `pnpm` em todos os comandos.
 
+No Windows, clone o projeto num caminho curto (por exemplo `C:\dev\nft-marketplace`). O `node_modules` do pnpm cria caminhos longos, e numa pasta já profunda o Vitest falha ao iniciar com `ERR_PACKAGE_IMPORT_NOT_DEFINED`.
+
 ## Como rodar
 
 ```bash
