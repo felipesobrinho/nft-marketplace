@@ -1,4 +1,4 @@
-const DB_VERSION = '1'
+const DB_VERSION = '3'
 const VERSION_KEY = 'kurio:mock-db-version'
 const DATA_PREFIX = 'msw/data/storage'
 const APP_PREFIX = 'kurio:'

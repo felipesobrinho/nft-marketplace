@@ -21,6 +21,19 @@ pnpm dev
 
 A aplicação abre em `http://localhost:5173` com os mocks ligados.
 
+## Credenciais fictícias
+
+| Usuário     | E-mail              | Senha       | O que tem                                                          |
+| ----------- | ------------------- | ----------- | ------------------------------------------------------------------ |
+| Ana Lima    | `ana@jungle.test`   | `Senha@123` | carteiras principal (Ethereum) e secundária (Polygon), 3 favoritos |
+| Bruno Costa | `bruno@jungle.test` | `Senha@123` | nenhuma carteira, para testar o cadastro de carteira               |
+
+Cupons: `JUNGLE10` (10%, válido) e `VELHO20` (expirado). As senhas existem só como hash bcrypt no banco simulado.
+
+## Cenários e reset
+
+A API simulada tem 18 cenários determinísticos (lentidão, falhas, sessão expirada, preço que muda na compra, timeout do pedido, pagamento recusado etc.). Escolha pela URL (`/?scenario=slow`), pelo painel "Demonstração" no canto inferior esquerdo ou por `PUT /__mock/scenario`. "Restaurar dados iniciais" no painel ou `POST /__mock/reset` volta ao seed. A lista completa, com o passo a passo para reproduzir cada falha, está em `docs/cenarios.md`.
+
 ## Variáveis de ambiente
 
 Os arquivos `.env.development` e `.env.demo` já vêm com os valores da demonstração. `.env.example` lista todas.
@@ -53,4 +66,6 @@ Antes do primeiro `pnpm test:e2e`, instale o navegador: `pnpm exec playwright in
 
 - `ARCHITECTURE.md`: camadas, decisões, cache, sessão, carrinho, tempo real e desvios do Figma.
 - `docs/design.md`: sistema de design (cores, tipografia, espaçamento, raios, componentes).
+- `docs/api.md`: contratos REST, envelope de erro e códigos.
 - `docs/eventos.md`: transporte do tempo real, envelope dos eventos, como disparar e limitações.
+- `docs/cenarios.md`: cenários, dados iniciais, endpoints de controle e persistência.

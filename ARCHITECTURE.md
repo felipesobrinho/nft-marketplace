@@ -81,6 +81,10 @@ Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18
 O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`shared/infrastructure/networkReady.ts`).
 
 - **Banco**: `@msw/data` com `persist()`. O seed só roda quando o banco está vazio. O `persist()` grava no `localStorage` quando a página fica oculta (refresh, troca de aba, fechamento), então o estado sobrevive ao refresh.
+- **Contratos**: handlers e app usam os mesmos schemas Zod de `src/shared/contracts`; a resposta do mock passa pelo schema antes de sair. Detalhes em `docs/api.md`.
+- **Cenários**: 18 cenários determinísticos escolhidos por `?scenario=`, pelo painel ou por `PUT /__mock/scenario`. A latência usa uma sequência fixa e os efeitos de compra disparam uma vez por ativação. Lista e passo a passo em `docs/cenarios.md`.
+- **Idempotência**: `POST /orders` exige `Idempotency-Key`; mesma chave e mesmo corpo devolvem o mesmo pedido, corpo diferente dá 409. A comparação usa o corpo com as chaves ordenadas.
+- **Pagamento**: o pedido nasce pendente com a hora de liquidação gravada. Um `setTimeout` liquida e emite `order.updated`; se a página recarregar antes, o mock reagenda no boot.
 - **Tempo real**: Socket.IO no caminho `/realtime/`, simulado com `ws.link` e `@mswjs/socket.io-binding`. O cliente só carrega `socket.io-client` depois do worker, senão o `engine.io-client` guardaria o `WebSocket` nativo. Detalhes e limitações em `docs/eventos.md`.
 
 ## Fora do escopo
