@@ -1,0 +1,166 @@
+@import 'tailwindcss';
+@import 'tw-animate-css';
+@import '@fontsource/roboto-mono/latin-400.css';
+@import '@fontsource/roboto-mono/latin-500.css';
+@import '@fontsource/roboto-mono/latin-700.css';
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  --color-*: initial;
+  --color-transparent: transparent;
+  --color-current: currentColor;
+  --color-white: #ffffff;
+  --color-black: #000000;
+
+  --color-background: #140d0a;
+  --color-foreground: #f5f1eb;
+  --color-card: #241612;
+  --color-card-foreground: #f5f1eb;
+  --color-popover: #241612;
+  --color-popover-foreground: #f5f1eb;
+  --color-primary: #d28a4c;
+  --color-primary-foreground: #140d0a;
+  --color-secondary: #2f1d15;
+  --color-secondary-foreground: #f5f1eb;
+  --color-muted: #2f1d15;
+  --color-muted-foreground: #cfb28c;
+  --color-accent: #2f1d15;
+  --color-accent-foreground: #f5f1eb;
+  --color-destructive: #ff5a5f;
+  --color-success: #00a66c;
+  --color-border: #3f2319;
+  --color-border-soft: #55321f;
+  --color-input: #8a6646;
+  --color-ring: #e89b55;
+
+  --color-highlight: #e89b55;
+  --color-subtle: #b39463;
+  --color-coral: #f0805f;
+  --color-amber: #e3a44e;
+  --color-surface-raised: #2f1d15;
+  --color-surface-dark: #38220f;
+
+  --font-*: initial;
+  --font-sans: 'Roboto Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+  --font-mono: 'Roboto Mono', ui-monospace, 'SFMono-Regular', Menlo, Consolas, monospace;
+
+  --font-weight-*: initial;
+  --font-weight-normal: 400;
+  --font-weight-medium: 500;
+  --font-weight-bold: 700;
+
+  --text-*: initial;
+  --text-caption: 0.75rem;
+  --text-caption--line-height: 1rem;
+  --text-small: 0.875rem;
+  --text-small--line-height: 1.25rem;
+  --text-body: 0.9375rem;
+  --text-body--line-height: 1.5rem;
+  --text-body-lg: 1rem;
+  --text-body-lg--line-height: 1.5rem;
+  --text-title: 1.125rem;
+  --text-title--line-height: 1.625rem;
+  --text-heading: 1.5rem;
+  --text-heading--line-height: 2rem;
+  --text-display-sm: 1.75rem;
+  --text-display-sm--line-height: 2.25rem;
+  --text-display: 2.6875rem;
+  --text-display--line-height: 3.5rem;
+
+  --tracking-*: initial;
+  --tracking-normal: 0;
+  --tracking-wide: 0.1em;
+
+  --radius-*: initial;
+  --radius-sm: 0.25rem;
+  --radius-md: 0.5rem;
+  --radius-lg: 1rem;
+
+  --shadow-*: initial;
+  --inset-shadow-*: initial;
+  --drop-shadow-*: initial;
+
+  --container-page: 75rem;
+  --container-dialog: 31.25rem;
+
+  --animate-shimmer: shimmer 1.6s linear infinite;
+
+  @keyframes shimmer {
+    from {
+      background-position: 200% 0;
+    }
+    to {
+      background-position: -200% 0;
+    }
+  }
+}
+
+@utility page {
+  width: 100%;
+  max-width: calc(var(--container-page) + 3rem);
+  margin-inline: auto;
+  padding-inline: 1.5rem;
+}
+
+@utility shimmer {
+  background-color: var(--color-card);
+  background-image: linear-gradient(
+    90deg,
+    var(--color-card) 0%,
+    var(--color-surface-raised) 50%,
+    var(--color-card) 100%
+  );
+  background-size: 200% 100%;
+  animation: var(--animate-shimmer);
+
+  @media (prefers-reduced-motion: reduce) {
+    animation: none;
+    background-image: none;
+  }
+}
+
+@layer base {
+  *,
+  ::after,
+  ::before {
+    border-color: var(--color-border);
+  }
+
+  html {
+    color-scheme: dark;
+    -webkit-text-size-adjust: 100%;
+  }
+
+  body {
+    min-height: 100dvh;
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-mono);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-ring);
+    outline-offset: 2px;
+  }
+
+  ::selection {
+    background-color: var(--color-primary);
+    color: var(--color-primary-foreground);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    *,
+    ::after,
+    ::before {
+      animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
+      transition-duration: 0.01ms !important;
+      scroll-behavior: auto !important;
+    }
+  }
+}
