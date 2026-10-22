@@ -379,7 +379,7 @@ export function ProfilePage() {
 
   return (
     <div className="flex flex-col gap-6">
-      <h1 id="profile-heading" className="text-title font-bold text-foreground">
+      <h1 id="profile-heading" className="text-heading font-bold text-foreground">
         Perfil do colecionador
       </h1>
       {content}
