@@ -1,4 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
+import { RealtimeConnection } from '@/app/RealtimeConnection'
+import { NftUpdateAnnouncer } from '@/modules/nft'
 import { createRootRouteWithContext, HeadContent, Outlet } from '@tanstack/react-router'
 import { NotFoundPage } from '@/shared/ui/feedback/NotFoundPage'
 import { RouteError } from '@/shared/ui/feedback/RouteError'
@@ -61,6 +63,8 @@ function RootLayout() {
           </div>
           <MobileNav />
           <Toaster position="bottom-right" />
+          <RealtimeConnection />
+          <NftUpdateAnnouncer />
         </TooltipProvider>
       </LiveAnnouncerProvider>
     </>

@@ -76,6 +76,13 @@ Preços trafegam como string decimal com ponto. As contas usam BigInt em wei (18
 - Retry só em rede, timeout e 5xx, no máximo duas vezes, com espera de 0,5 s, 1 s e 2 s (teto de 4 s). Nunca em 4xx: repetir um 409 ou 422 não muda o resultado.
 - Mutations não repetem sozinhas.
 
+## Mocks e tempo real
+
+O MSW sobe por import dinâmico em `src/app/bootstrap.ts` quando `VITE_API_MOCKING=enabled`, inclusive no build de demonstração publicado. A interface renderiza sem esperar o worker; só as requisições e o socket esperam por ele (`shared/infrastructure/networkReady.ts`).
+
+- **Banco**: `@msw/data` com `persist()`. O seed só roda quando o banco está vazio. O `persist()` grava no `localStorage` quando a página fica oculta (refresh, troca de aba, fechamento), então o estado sobrevive ao refresh.
+- **Tempo real**: Socket.IO no caminho `/realtime/`, simulado com `ws.link` e `@mswjs/socket.io-binding`. O cliente só carrega `socket.io-client` depois do worker, senão o `engine.io-client` guardaria o `WebSocket` nativo. Detalhes e limitações em `docs/eventos.md`.
+
 ## Fora do escopo
 
 Ações fora do escopo do desafio nunca aparentam sucesso. Elas abrem o aviso "Indisponível nesta demonstração", que diz o que não faz parte da entrega.
