@@ -51,12 +51,12 @@ test('com o item no carrinho, a mudança de preço aparece e o resumo é recalcu
   await page.goto('/carrinho')
   await waitForSocket(page)
   const summary = page.getByRole('region', { name: 'Resumo do pedido' }).filter({ visible: true }).first()
-  await expect(summary).toContainText('2.38 ETH')
+  await expect(summary).toContainText('2.380 ETH')
   await emitNftUpdate(page, { ...apeEdition, price: '1.5' })
   await expect(page.locator('[data-cart-notice]')).toContainText(
     'O preço de Emerald Ape #042 (1/50) mudou de 1.19 ETH para 1.50 ETH. Os valores do carrinho foram atualizados.',
   )
-  await expect(summary).toContainText('3.00 ETH')
+  await expect(summary).toContainText('3.000 ETH')
 })
 
 test('no checkout, preço novo pelo socket exige nova confirmação e vale no pedido', async ({ page }) => {

@@ -1,5 +1,5 @@
 import type { Receipt } from '@/shared/contracts/commerce'
-import { formatEth, formatEthDiscount } from '@/shared/domain/format'
+import { commonEthDigits, formatEth, formatEthDiscount } from '@/shared/domain/format'
 
 function Row({ label, value }: { label: string; value: string }) {
   return (
@@ -11,16 +11,20 @@ function Row({ label, value }: { label: string; value: string }) {
 }
 
 export function ReceiptTotals({ receipt }: { receipt: Receipt }) {
+  const digits = commonEthDigits(receipt.subtotal, receipt.discount, receipt.networkFee, receipt.total)
   return (
     <dl className="flex flex-col gap-2">
-      <Row label="Subtotal" value={formatEth(receipt.subtotal)} />
+      <Row label="Subtotal" value={formatEth(receipt.subtotal, digits)} />
       {receipt.coupon ? (
-        <Row label={`Desconto (${receipt.coupon.code})`} value={formatEthDiscount(receipt.discount)} />
+        <Row
+          label={`Desconto (${receipt.coupon.code})`}
+          value={formatEthDiscount(receipt.discount, digits)}
+        />
       ) : null}
-      <Row label="Taxa de rede" value={formatEth(receipt.networkFee)} />
+      <Row label="Taxa de rede" value={formatEth(receipt.networkFee, digits)} />
       <div className="flex items-baseline justify-between gap-4 border-t border-border pt-3">
         <dt className="text-body font-bold text-foreground">Total</dt>
-        <dd className="text-title font-bold text-highlight">{formatEth(receipt.total)}</dd>
+        <dd className="text-title font-bold text-highlight">{formatEth(receipt.total, digits)}</dd>
       </div>
     </dl>
   )
