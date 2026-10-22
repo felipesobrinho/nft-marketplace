@@ -3,6 +3,10 @@
   "private": true,
   "version": "0.1.0",
   "type": "module",
+  "sideEffects": [
+    "*.css",
+    "./src/app/main.tsx"
+  ],
   "packageManager": "pnpm@11.28.7",
   "engines": {
     "node": ">=22.13.0 <23",
