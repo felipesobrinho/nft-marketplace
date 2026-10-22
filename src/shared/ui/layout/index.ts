@@ -1,5 +1,5 @@
 export { Footer } from './Footer'
-export { Header, HeaderCartLink, HeaderLoginLink, HeaderSearchButton } from './Header'
+export { Header, HeaderCartLink, HeaderSearchButton } from './Header'
 export { Logo } from './Logo'
 export { MobileNav } from './MobileNav'
 export { MobileTopBar } from './MobileTopBar'

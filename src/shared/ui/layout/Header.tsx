@@ -1,7 +1,6 @@
 import { useState, type ReactNode } from 'react'
 import { Link, useRouterState } from '@tanstack/react-router'
-import { LogIn, Search, ShoppingCart } from 'lucide-react'
-import { Button } from '@/shared/ui/components/ui/button'
+import { Search, ShoppingCart } from 'lucide-react'
 import { UnavailableButton } from '@/shared/ui/feedback/UnavailableNotice'
 import { cn } from '@/shared/ui/lib/utils'
 import { Logo } from './Logo'
@@ -100,7 +99,7 @@ interface HeaderCartLinkProps {
 }
 
 export function HeaderCartLink({ count = 0 }: HeaderCartLinkProps) {
-  const label = count > 0 ? `Carrinho, ${count} itens` : 'Carrinho'
+  const label = count === 0 ? 'Carrinho' : `Carrinho, ${count} ${count === 1 ? 'item' : 'itens'}`
   return (
     <Link
       to="/carrinho"
@@ -117,16 +116,5 @@ export function HeaderCartLink({ count = 0 }: HeaderCartLinkProps) {
         </span>
       ) : null}
     </Link>
-  )
-}
-
-export function HeaderLoginLink() {
-  return (
-    <Button size="sm" asChild>
-      <Link to="/entrar">
-        <LogIn aria-hidden="true" />
-        Entrar
-      </Link>
-    </Button>
   )
 }

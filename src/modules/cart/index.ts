@@ -5,6 +5,7 @@ export { CartHeaderLink } from './ui/CartHeaderLink'
 export { describeAdjustment, mergeGuestCart } from './application/merge'
 export {
   quoteQuery,
+  requestQuote,
   useApplyCoupon,
   useCartQuote,
   useRemoveCartItem,
