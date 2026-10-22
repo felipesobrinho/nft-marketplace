@@ -41,14 +41,14 @@ function AccountMenu({ user }: { user: SessionUser }) {
       <DropdownMenuTrigger asChild>
         <button
           type="button"
-          aria-label={`Conta de ${user.displayName}`}
           className="inline-flex min-h-11 items-center gap-2 rounded-sm text-foreground hover:text-highlight"
         >
-          <Avatar>
+          <Avatar aria-hidden="true">
             {user.avatarUrl ? <AvatarImage src={user.avatarUrl} alt="" /> : null}
             <AvatarFallback>{initialsOf(user.displayName)}</AvatarFallback>
           </Avatar>
-          <span className="hidden text-small font-medium lg:inline">{user.displayName}</span>
+          <span className="sr-only">Conta de </span>
+          <span className="sr-only text-small font-medium lg:not-sr-only">{user.displayName}</span>
           <ChevronDown aria-hidden="true" className="size-4" />
         </button>
       </DropdownMenuTrigger>
