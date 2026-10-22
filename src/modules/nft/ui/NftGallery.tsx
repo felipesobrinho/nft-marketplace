@@ -10,10 +10,13 @@ export function NftGallery({ nft }: { nft: NftDetail }) {
   const [selected, setSelected] = useState(1)
 
   return (
-    <div className="flex items-start gap-4">
-      <ul aria-label="Miniaturas" className="hidden w-22 shrink-0 flex-col gap-3 md:flex">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-start">
+      <ul
+        aria-label="Miniaturas"
+        className="order-2 hidden shrink-0 flex-row gap-3 md:flex lg:order-1 lg:w-22 lg:flex-col"
+      >
         {THUMBNAILS.map((index) => (
-          <li key={index}>
+          <li key={index} className="w-22 lg:w-full">
             <button
               type="button"
               aria-label={`Ver imagem ${index} de ${THUMBNAILS.length}`}
@@ -29,7 +32,7 @@ export function NftGallery({ nft }: { nft: NftDetail }) {
           </li>
         ))}
       </ul>
-      <div className="relative min-w-0 flex-1 rounded-md bg-card p-4">
+      <div className="relative order-1 min-w-0 rounded-md bg-card p-4 lg:order-2 lg:flex-1">
         <NftImage src={nft.image.src} alt={nft.image.alt} sizes="(min-width: 768px) 440px, 100vw" priority />
         <Dialog>
           <DialogTrigger asChild>

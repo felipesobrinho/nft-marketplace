@@ -23,13 +23,14 @@ type AccountPath = '/conta/perfil' | '/conta/carteiras' | '/conta/favoritos'
 interface AccountLink {
   to: AccountPath
   label: string
+  shortLabel: string
   icon: LucideIcon
 }
 
 const accountLinks: readonly AccountLink[] = [
-  { to: '/conta/perfil', label: 'Dados do perfil', icon: UserRound },
-  { to: '/conta/carteiras', label: 'Carteiras', icon: MapPin },
-  { to: '/conta/favoritos', label: 'Lista de interesse', icon: Heart },
+  { to: '/conta/perfil', label: 'Dados do perfil', shortLabel: 'Perfil', icon: UserRound },
+  { to: '/conta/carteiras', label: 'Carteiras', shortLabel: 'Carteiras', icon: MapPin },
+  { to: '/conta/favoritos', label: 'Lista de interesse', shortLabel: 'Favoritos', icon: Heart },
 ]
 
 interface UnavailableLink {
@@ -47,12 +48,10 @@ const unavailableLinks: readonly UnavailableLink[] = [
 const sideItemClass =
   'flex min-h-11 w-full items-center gap-3 border-l-4 border-transparent px-4 text-small font-medium text-highlight transition-colors hover:bg-accent'
 
-const sideActiveClass = 'border-primary bg-accent font-bold'
+const sideLinkClass = `${sideItemClass} data-[status=active]:border-primary data-[status=active]:bg-accent data-[status=active]:font-bold`
 
 const tabClass =
-  'flex h-full min-h-11 items-center justify-center border-b-2 border-transparent px-2 py-2 text-center text-small font-medium text-muted-foreground transition-colors hover:text-foreground'
-
-const tabActiveClass = 'border-primary font-bold text-foreground'
+  'flex min-h-11 items-center justify-center border-b-2 border-transparent px-2 text-center text-small font-medium whitespace-nowrap text-muted-foreground transition-colors hover:text-foreground data-[status=active]:border-primary data-[status=active]:font-bold data-[status=active]:text-foreground'
 
 type LinkProps = ComponentProps<typeof Link>
 
@@ -73,8 +72,8 @@ function useSignOut() {
 function SideLink({ to, label, icon: Icon }: AccountLink) {
   const linkProps: LinkProps = {
     to,
-    className: sideItemClass,
-    activeProps: { className: sideActiveClass, 'aria-current': 'page' },
+    className: sideLinkClass,
+    activeProps: { 'aria-current': 'page' },
   }
   return (
     <Link {...linkProps}>
@@ -84,19 +83,19 @@ function SideLink({ to, label, icon: Icon }: AccountLink) {
   )
 }
 
-function TabLink({ to, label }: AccountLink) {
+function TabLink({ to, shortLabel }: AccountLink) {
   const linkProps: LinkProps = {
     to,
     className: tabClass,
-    activeProps: { className: tabActiveClass, 'aria-current': 'page' },
+    activeProps: { 'aria-current': 'page' },
   }
-  return <Link {...linkProps}>{label}</Link>
+  return <Link {...linkProps}>{shortLabel}</Link>
 }
 
 function SideMenu() {
   const { signOut, isPending } = useSignOut()
   return (
-    <aside className="hidden w-72 shrink-0 self-start bg-card py-4 md:block">
+    <aside className="hidden w-72 shrink-0 self-start bg-card py-4 lg:block">
       <h2 className="px-4 pb-2 text-title font-bold text-foreground">Meu perfil</h2>
       <nav aria-label="Conta">
         <ul className="flex flex-col">
@@ -126,7 +125,7 @@ function SideMenu() {
 
 function MobileTabs() {
   return (
-    <nav aria-label="Conta" className="md:hidden">
+    <nav aria-label="Conta" className="lg:hidden">
       <ul className="grid grid-cols-3 border-b border-border">
         {accountLinks.map((link) => (
           <li key={link.to}>
@@ -144,7 +143,7 @@ function MobileSignOut() {
     <Button
       type="button"
       variant="outline"
-      className="mt-8 w-full md:hidden"
+      className="mt-8 w-full lg:hidden"
       disabled={isPending}
       onClick={signOut}
     >
@@ -158,11 +157,11 @@ export function AccountShell({ children }: { children: ReactNode }) {
   return (
     <>
       <MobileTopBar title="Minha conta" backTo={{ to: '/' }} />
-      <div className="page flex flex-col gap-6 pt-2 pb-12 md:flex-row md:gap-8 md:pt-8 md:pb-16">
+      <div className="page flex flex-col gap-6 pt-2 pb-12 md:pt-8 md:pb-16 lg:flex-row lg:gap-8">
         <SideMenu />
         <div className="flex min-w-0 flex-1 flex-col">
           <MobileTabs />
-          <div className="pt-6 md:pt-0">{children}</div>
+          <div className="pt-6 lg:pt-0">{children}</div>
           <MobileSignOut />
         </div>
       </div>

@@ -1,5 +1,6 @@
 import type { QueryClient } from '@tanstack/react-query'
 import { RealtimeConnection } from '@/app/RealtimeConnection'
+import { RealtimeSync } from '@/app/RealtimeSync'
 import { CartHeaderLink } from '@/modules/cart'
 import { UserMenu } from '@/modules/auth'
 import { CatalogSearchForm } from '@/modules/catalog'
@@ -64,6 +65,7 @@ function RootLayout() {
           <MobileNav />
           <Toaster position="bottom-center" />
           <RealtimeConnection />
+          <RealtimeSync />
           <NftUpdateAnnouncer />
         </TooltipProvider>
       </LiveAnnouncerProvider>

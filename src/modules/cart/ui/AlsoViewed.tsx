@@ -16,7 +16,7 @@ export function AlsoViewed({ excludeNftIds }: { excludeNftIds: readonly string[]
   return (
     <section aria-labelledby="also-viewed-title" className="flex flex-col gap-6">
       <SectionHeading level={1} id="also-viewed-title" title="Colecionadores também viram" />
-      <div className="grid grid-cols-2 gap-6 md:grid-cols-3 xl:grid-cols-5">
+      <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5">
         {items.map((nft) => (
           <NftCard
             key={nft.id}

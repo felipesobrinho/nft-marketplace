@@ -15,15 +15,18 @@ export function PurchaseLines({ lines, caption, className }: PurchaseLinesProps)
       <caption className="sr-only">{caption}</caption>
       <colgroup>
         <col />
-        <col className="w-12" />
-        <col className="w-28" />
+        <col className="hidden w-12 sm:table-column" />
+        <col className="w-24 sm:w-28" />
       </colgroup>
       <thead>
         <tr className="border-b border-border">
           <th scope="col" className="pb-3 text-small font-medium text-foreground">
             NFT
           </th>
-          <th scope="col" className="pb-3 text-center text-small font-medium text-foreground">
+          <th
+            scope="col"
+            className="hidden pb-3 text-center text-small font-medium text-foreground sm:table-cell"
+          >
             Qtd.
           </th>
           <th scope="col" className="pb-3 text-right text-small font-medium text-foreground">
@@ -36,7 +39,7 @@ export function PurchaseLines({ lines, caption, className }: PurchaseLinesProps)
           <tr key={line.editionId} data-purchase-line className="border-b border-border-soft last:border-b-0">
             <td className="py-3 pr-2 align-middle sm:pr-3">
               <div className="flex min-w-0 items-center gap-3">
-                <div className="size-12 shrink-0 sm:size-14">
+                <div className="size-10 shrink-0 sm:size-14">
                   <NftImage src={line.image.src} alt="" sizes="56px" className="size-full rounded-sm" />
                 </div>
                 <div className="flex min-w-0 flex-col gap-1">
@@ -44,12 +47,14 @@ export function PurchaseLines({ lines, caption, className }: PurchaseLinesProps)
                     {line.name}
                   </span>
                   <span className="text-caption text-subtle">
-                    Edição {line.editionLabel} · {formatTokenId(line.tokenId)}
+                    <span className="whitespace-nowrap">Edição {line.editionLabel}</span>{' '}
+                    <span className="whitespace-nowrap">· {formatTokenId(line.tokenId)}</span>{' '}
+                    <span className="whitespace-nowrap sm:hidden">· Qtd. {line.quantity}</span>
                   </span>
                 </div>
               </div>
             </td>
-            <td className="py-3 text-center align-middle text-body text-muted-foreground">
+            <td className="hidden py-3 text-center align-middle text-body text-muted-foreground sm:table-cell">
               <span aria-hidden="true">x </span>
               {line.quantity}
             </td>

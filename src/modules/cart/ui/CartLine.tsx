@@ -17,7 +17,9 @@ export function CartTableHeader() {
     <div role="row" className={`${rowGrid} hidden px-4 pb-3 text-small font-medium text-foreground md:grid`}>
       <div role="columnheader">NFT</div>
       <div role="columnheader">Preço</div>
-      <div role="columnheader">Quantidade</div>
+      <div role="columnheader" className="text-center">
+        Quantidade
+      </div>
       <div role="columnheader">Total</div>
       <div role="columnheader">
         <span className="sr-only">Remover</span>
@@ -60,7 +62,9 @@ export function CartLine({ item }: { item: CartItem }) {
             {item.name}
           </Link>
           <p className="text-caption text-subtle">
-            Edição {item.editionLabel} · ID do token {formatTokenId(item.tokenId)}
+            <span className="whitespace-nowrap">Edição {item.editionLabel}</span>
+            {' · '}
+            <span className="whitespace-nowrap">ID do token {formatTokenId(item.tokenId)}</span>
           </p>
         </div>
       </div>
@@ -68,7 +72,7 @@ export function CartLine({ item }: { item: CartItem }) {
         <span className="text-caption text-muted-foreground md:sr-only">Preço</span>
         <span className="text-body text-foreground">{formatEth(item.unitPrice)}</span>
       </div>
-      <div role="cell" className="order-4 md:order-none">
+      <div role="cell" className="order-4 md:order-none md:flex md:justify-center">
         <QuantityStepper
           size="sm"
           value={item.quantity}

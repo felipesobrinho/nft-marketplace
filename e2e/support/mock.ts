@@ -40,6 +40,7 @@ export async function waitForMocks(page: Page): Promise<void> {
 }
 
 export async function waitForSocket(page: Page): Promise<void> {
+  await waitForMocks(page)
   await expect
     .poll(async () => (await call<{ connections: number }>(page, '/__mock/realtime')).body.connections)
     .toBeGreaterThan(0)

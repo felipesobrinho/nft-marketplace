@@ -8,6 +8,7 @@ export {
   pendingOrdersQuery,
   useCreateOrder,
   useOrder,
+  useOrderRealtime,
   usePendingOrders,
 } from './application/orders'
 export { OrderNotFound } from './ui/OrderNotFound'

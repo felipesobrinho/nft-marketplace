@@ -74,10 +74,12 @@ export function NftTabs({ nft }: { nft: NftDetail }) {
       <Tabs defaultValue="details" className="gap-6">
         <TabsList className="justify-center gap-4 md:gap-6">
           <TabsTrigger value="details" className="min-h-11 whitespace-normal text-center">
-            Detalhes do NFT
+            <span className="sm:hidden">Detalhes</span>
+            <span className="hidden sm:inline">Detalhes do NFT</span>
           </TabsTrigger>
           <TabsTrigger value="reviews" className="min-h-11 whitespace-normal text-center">
-            Avaliações de colecionadores ({nft.rating.count})
+            <span className="sm:hidden">Avaliações ({nft.rating.count})</span>
+            <span className="hidden sm:inline">Avaliações de colecionadores ({nft.rating.count})</span>
           </TabsTrigger>
         </TabsList>
         <TabsContent value="details">

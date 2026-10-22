@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { parseEth } from './eth'
 import {
+  commonEthDigits,
   formatDate,
   formatEth,
   formatEthDiscount,
@@ -44,5 +45,23 @@ describe('outros formatadores', () => {
     expect(shortenAddress('0xA91F00000000000000000000000000000000E82C')).toBe('0xA91F…E82C')
     expect(formatEnsName('nova.kurio')).toBe('nova.kurio.eth')
     expect(formatEnsName('analima.eth')).toBe('analima.eth')
+  })
+})
+
+describe('casas comuns em um bloco de valores', () => {
+  it('usa o maior número de casas necessário, entre 2 e 4', () => {
+    expect(commonEthDigits('4.97', '0.016', '4.986')).toBe(3)
+    expect(commonEthDigits('2.38', '0.002', '2.382')).toBe(3)
+    expect(commonEthDigits('1.2', '0.5')).toBe(2)
+    expect(commonEthDigits('1.23456')).toBe(4)
+  })
+
+  it('formata todos os valores com as mesmas casas', () => {
+    const digits = commonEthDigits('4.97', '0.016', '4.986')
+    expect(formatEth('4.97', digits)).toBe('4.970 ETH')
+    expect(formatEth('0.016', digits)).toBe('0.016 ETH')
+    expect(formatEth('4.986', digits)).toBe('4.986 ETH')
+    expect(formatEthDiscount('0.5', digits)).toBe('-0.500 ETH')
+    expect(formatEthDiscount('0', digits)).toBe('0.000 ETH')
   })
 })

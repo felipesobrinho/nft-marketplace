@@ -52,7 +52,7 @@ function CheckoutSkeleton() {
       role="status"
       aria-busy="true"
       aria-label="Carregando o pagamento"
-      className="grid gap-8 md:grid-cols-[minmax(0,1fr)_22rem] md:gap-12"
+      className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-12"
     >
       <div className="flex flex-col gap-4">
         <Skeleton className="h-16" />
@@ -60,7 +60,7 @@ function CheckoutSkeleton() {
         <Skeleton className="h-14" />
         <Skeleton className="h-14" />
       </div>
-      <Skeleton className="hidden h-[26rem] md:block" />
+      <Skeleton className="hidden h-[26rem] lg:block" />
     </div>
   )
 }
@@ -117,7 +117,7 @@ function CheckoutFlow() {
   return (
     <div className="flex flex-col gap-8">
       <StepIndicator draft={draft} onChange={update} />
-      <div className="grid items-start gap-8 md:grid-cols-[minmax(0,1fr)_20rem] lg:grid-cols-[minmax(0,1fr)_28rem] lg:gap-12">
+      <div className="grid items-start gap-8 lg:grid-cols-[minmax(0,1fr)_24rem] lg:gap-12 xl:grid-cols-[minmax(0,1fr)_28rem]">
         <div className="min-w-0">
           {draft.step === 'dados' ? (
             <BuyerStep draft={draft} onChange={update} headingRef={headingRef} />
@@ -129,9 +129,12 @@ function CheckoutFlow() {
         </div>
         <aside
           aria-label="Resumo da compra"
-          className={cn('flex-col gap-4 md:sticky md:top-24 md:flex', isReview ? 'flex' : 'hidden')}
+          className={cn('flex-col gap-4 md:flex lg:sticky lg:top-24', isReview ? 'flex' : 'hidden')}
         >
-          <section aria-labelledby="checkout-nfts" className="flex flex-col gap-4 rounded-md bg-card p-6">
+          <section
+            aria-labelledby="checkout-nfts"
+            className="flex flex-col gap-4 rounded-md bg-card p-4 sm:p-6"
+          >
             <SectionHeading id="checkout-nfts" as="h2" level={1} title="Seus NFTs" />
             {quote.data ? (
               <PurchaseLines lines={quote.data.lines} caption="Seus NFTs" />

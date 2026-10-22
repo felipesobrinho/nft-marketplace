@@ -72,6 +72,37 @@ export function usePurchase() {
     update((current) => withAttempt(current, attemptFor(current, reviewedQuoteId, newIdempotencyKey)))
   }, [cartIsEmpty, draft.attempt, draft.step, reviewedQuoteId, update])
 
+  const [shownQuote, setShownQuote] = useState<Quote | undefined>(quote.data)
+
+  if (quote.data !== shownQuote) {
+    setShownQuote(quote.data)
+    const previous = shownQuote
+    const current = quote.data
+    const comparable =
+      previous !== undefined &&
+      current !== undefined &&
+      previous.id !== current.id &&
+      previous.network === current.network &&
+      draft.step === 'revisao' &&
+      (state.status === 'idle' || state.status === 'failed')
+    if (comparable && !canPurchase(current)) {
+      setState({
+        status: 'blocked',
+        issues: blockingIssues(current),
+        message: 'Um item do pedido mudou e não pode ser comprado agora.',
+      })
+    } else if (comparable) {
+      const changes = compareQuotes(previous, current)
+      if (changes.length > 0) {
+        setState({
+          status: 'changed',
+          changes,
+          message: 'Os valores mudaram enquanto você revisava. Confira e confirme de novo.',
+        })
+      }
+    }
+  }
+
   const replaceQuote = useCallback(
     (fresh: Quote) => {
       if (!cart.data) return
