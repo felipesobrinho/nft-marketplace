@@ -55,7 +55,7 @@ export function NftCard({
         {favoriteSlot ? <div className="absolute top-5 right-5 z-10">{favoriteSlot}</div> : null}
       </div>
       <div className="flex min-w-0 flex-col gap-1">
-        <Heading className="truncate text-body-lg font-normal text-foreground">
+        <Heading className="line-clamp-2 min-h-[2lh] text-body-lg font-normal break-words text-foreground lg:line-clamp-1 lg:min-h-0">
           {renderLink({
             className: 'after:absolute after:inset-0 focus-visible:outline-none',
             children: name,
