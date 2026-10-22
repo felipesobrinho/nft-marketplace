@@ -1,0 +1,74 @@
+[
+  {
+    "url": "http://localhost:4173/",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost--2026_10_22_17_19_10.report.html",
+    "jsonPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost--2026_10_22_17_19_10.report.json",
+    "summary": {
+      "performance": 0.63,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4173/",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost--2026_10_22_17_19_28.report.html",
+    "jsonPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost--2026_10_22_17_19_28.report.json",
+    "summary": {
+      "performance": 0.61,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4173/nft/nft-0042",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost-nft_nft_0042-2026_10_22_17_20_18.report.html",
+    "jsonPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost-nft_nft_0042-2026_10_22_17_20_18.report.json",
+    "summary": {
+      "performance": 0.65,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4173/nft/nft-0042",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost-nft_nft_0042-2026_10_22_17_20_34.report.html",
+    "jsonPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost-nft_nft_0042-2026_10_22_17_20_34.report.json",
+    "summary": {
+      "performance": 0.61,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4173/",
+    "isRepresentativeRun": true,
+    "htmlPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost--2026_10_22_17_19_46.report.html",
+    "jsonPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost--2026_10_22_17_19_46.report.json",
+    "summary": {
+      "performance": 0.61,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  },
+  {
+    "url": "http://localhost:4173/nft/nft-0042",
+    "isRepresentativeRun": true,
+    "htmlPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost-nft_nft_0042-2026_10_22_17_20_02.report.html",
+    "jsonPath": "C:\\Users\\Nephew\\nft-marketplace\\lighthouse\\mobile\\localhost-nft_nft_0042-2026_10_22_17_20_02.report.json",
+    "summary": {
+      "performance": 0.66,
+      "accessibility": 1,
+      "best-practices": 1,
+      "seo": 1
+    }
+  }
+]
