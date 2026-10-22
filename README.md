@@ -62,6 +62,14 @@ Os arquivos `.env.development` e `.env.demo` já vêm com os valores da demonstr
 
 Antes do primeiro `pnpm test:e2e`, instale o navegador: `pnpm exec playwright install chromium`.
 
+## Regressão visual
+
+`e2e/visual.spec.ts` compara início, detalhe, carrinho e as etapas de dados e revisão do pagamento, no desktop (1440) e no mobile (390), com o seed, relógio fixo (`page.clock`), animações desligadas, fontes e imagens carregadas e o botão da demonstração mascarado.
+
+As imagens de referência valem para Linux e ficam em `e2e/visual.spec.ts-snapshots/*-linux.png`, geradas pelo GitHub Actions, porque a renderização de fonte muda entre sistemas. No Windows e no macOS, `pnpm test:visual --update-snapshots` gera referências locais com sufixo `-win32` ou `-darwin`, ignoradas pelo git.
+
+Para atualizar as referências do Linux depois de uma mudança visual intencional, rode o workflow `visual-baselines` na aba Actions, baixe o artefato `visual-baselines` e substitua os arquivos em `e2e/visual.spec.ts-snapshots/`. O job `visual` do CI compara a cada push e guarda as diferenças no artefato `visual-snapshots`.
+
 ## Documentação
 
 - `ARCHITECTURE.md`: camadas, decisões, cache, sessão, carrinho, tempo real e desvios do Figma.
